@@ -21,7 +21,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     public CatalogItem create(CatalogItem catalogItem) {
         catalogItem.setId(System.currentTimeMillis());
         CatalogItemEntity savedEntity = catalogItemEntityRepository.save(catalogItem.toEntity());
-        return new CatalogItem().buildCatalogItem(savedEntity);
+        return new CatalogItem().fromEntity(savedEntity);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
       Iterable<CatalogItemEntity> entities = catalogItemEntityRepository.findAll();
       List<CatalogItem> items = new ArrayList<>();
       for(CatalogItemEntity entity: entities){
-          CatalogItem catalogItem = new CatalogItem().buildCatalogItem(entity);
+          CatalogItem catalogItem = new CatalogItem().fromEntity(entity);
           items.add(catalogItem);
       }
       return items;
