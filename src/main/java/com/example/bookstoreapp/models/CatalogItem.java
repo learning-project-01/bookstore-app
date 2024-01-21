@@ -2,7 +2,6 @@ package com.example.bookstoreapp.models;
 
 import com.example.bookstoreapp.entities.CatalogItemEntity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,7 @@ public class CatalogItem {
         return new CatalogItemEntity(this.getId(), this.getName(), this.getPrice());
     }
 
-    public CatalogItem buildCatalogItem(CatalogItemEntity entity){
+    public CatalogItem fromEntity(CatalogItemEntity entity){
         this.setId(entity.getId());
         this.setName(entity.getName());
         this.setPrice(entity.getPrice());
