@@ -24,8 +24,13 @@ public class FlywayConfig {
     @PostConstruct
     public void init() {
         log.info("Executing Flyway migration");
-        executeFlyway(dataSource);
-        log.info("Flyway migration executed");
+        try {
+            executeFlyway(dataSource);
+            log.info("Flyway migration executed");
+        }catch (Exception e)
+        {
+            log.info("Flyway migration failed", e);
+        }
     }
 
     /**
