@@ -15,32 +15,32 @@ import javax.sql.DataSource;
 @Slf4j
 public class FlywayConfig {
 
-    @Autowired
-    private DataSource dataSource;
+  @Autowired
+  private DataSource dataSource;
 
-    /**
-     * Executes Flyway migration on application startup.
-     */
-    @PostConstruct
-    public void init() {
-        log.info("Executing Flyway migration");
-        executeFlyway(dataSource);
-        log.info("Flyway migration executed");
-    }
+  /**
+   * Executes Flyway migration on application startup.
+   */
+  @PostConstruct
+  public void init() {
+    log.info("Executing Flyway migration");
+    executeFlyway(dataSource);
+    log.info("Flyway migration executed");
+  }
 
-    /**
-     * Executes Flyway migration using the provided DataSource.
-     *
-     * @param dataSource DataSource used for database connection.
-     */
-    private void executeFlyway(DataSource dataSource) {
-        Flyway flyway = Flyway.configure()
-            .dataSource(dataSource)
-            .locations("classpath:/db/scripts") // Replace this with your custom path
-            .load();
+  /**
+   * Executes Flyway migration using the provided DataSource.
+   *
+   * @param dataSource DataSource used for database connection.
+   */
+  private void executeFlyway(DataSource dataSource) {
+    Flyway flyway = Flyway.configure()
+        .dataSource(dataSource)
+        .locations("classpath:/db/scripts") // Replace this with your custom path
+        .load();
 
-        // You can set other Flyway configurations here if needed
+    // You can set other Flyway configurations here if needed
 
-        flyway.migrate();
-    }
+    flyway.migrate();
+  }
 }

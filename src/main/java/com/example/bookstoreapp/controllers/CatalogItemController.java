@@ -4,7 +4,12 @@ import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.services.CatalogItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -12,20 +17,20 @@ import java.util.List;
 @RequestMapping("/catalogItems") // URL is plural here i.e. catalogItems
 public class CatalogItemController {
 
-    @Autowired
-    private CatalogItemService catalogItemService;
+  @Autowired
+  private CatalogItemService catalogItemService;
 
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    // as the item will be created after the execution of below method,
-    // so we will return HTTPStatus as CREATED i.e. 201
-    public CatalogItem createNewItem(@RequestBody CatalogItem catalogItem) {
-        return catalogItemService.create(catalogItem);
-    }
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  // as the item will be created after the execution of below method,
+  // so we will return HTTPStatus as CREATED i.e. 201
+  public CatalogItem createNewItem(@RequestBody CatalogItem catalogItem) {
+    return catalogItemService.create(catalogItem);
+  }
 
-    @GetMapping
-    public List<CatalogItem> listItems() {
-        return catalogItemService.list();
-    }
+  @GetMapping
+  public List<CatalogItem> listItems() {
+    return catalogItemService.list();
+  }
 }
