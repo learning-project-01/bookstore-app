@@ -13,17 +13,17 @@ public class User {
   private String lastName;
   private UserRole role;
 
+  public String getPassword() {
+    return new String(password);
+  }
+
   @JsonSetter
   public void setPassword(String password) {
     this.password = password.toCharArray();
     password = null;
   }
 
-  public String getPassword() {
-    return new String(password);
-  }
-
-  public UserEntity toEntity(){
+  public UserEntity toEntity() {
     UserEntity entity = new UserEntity();
     entity.setId(this.getId());
     entity.setEmail(this.getEmail());
@@ -34,7 +34,7 @@ public class User {
     return entity;
   }
 
-  public User fromEntity(UserEntity entity){
+  public User fromEntity(UserEntity entity) {
     this.setId(entity.getId());
     this.setEmail(entity.getEmail());
     this.setPassword("[PROTECTED]");

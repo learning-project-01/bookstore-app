@@ -5,7 +5,9 @@ import com.example.bookstoreapp.models.CatalogItem;
 import java.util.List;
 
 public interface CatalogItemService {
-    public CatalogItem create(CatalogItem catalogItem);
+  CatalogItem create(CatalogItem catalogItem);
 
-    public List<CatalogItem> list();
+  CatalogItem findById(Long catalogItemId);
+
+  List<CatalogItem> list();
 }

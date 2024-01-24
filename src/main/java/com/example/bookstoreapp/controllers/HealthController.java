@@ -14,13 +14,14 @@ import java.util.Map;
 @RequestMapping
 public class HealthController {
 
-    @Value("${application.name}")
-    private String appName;
-    @GetMapping("/health")
-    public Map<String, String> getHealth(){
-        Map<String, String> map = new HashMap<>();
-        map.put("appName", appName);
-        map.put("systemTime", Instant.now().atZone(ZoneId.of("UTC")).toLocalDateTime().toString());
-        return map;
-    }
+  @Value("${application.name}")
+  private String appName;
+
+  @GetMapping("/health")
+  public Map<String, String> getHealth() {
+    Map<String, String> map = new HashMap<>();
+    map.put("appName", appName);
+    map.put("systemTime", Instant.now().atZone(ZoneId.of("UTC")).toLocalDateTime().toString());
+    return map;
+  }
 }

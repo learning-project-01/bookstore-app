@@ -6,16 +6,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "user")
+@Table(name = "cart_item")
 @Data
-public class UserEntity {
+public class CartItemEntity {
 
   @Id
   private Long id;
-  private String email;
-  private String password;
-  private String firstName;
-  private String lastName;
-  private String role;
-
+  private Long cartId;
+  private Long catalogItemId;
+  private int quantity;
+  private int state;
 }
