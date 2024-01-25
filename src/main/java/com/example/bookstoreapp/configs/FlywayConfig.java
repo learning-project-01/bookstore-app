@@ -36,7 +36,8 @@ public class FlywayConfig {
   private void executeFlyway(DataSource dataSource) {
     Flyway flyway = Flyway.configure()
         .dataSource(dataSource)
-        .locations("classpath:/db/scripts") // Replace this with your custom path
+        .locations("classpath:/db/scripts")
+            // Replace this with your custom path
         .load();
 
     // You can set other Flyway configurations here if needed
