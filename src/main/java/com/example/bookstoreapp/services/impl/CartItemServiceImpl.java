@@ -1,6 +1,7 @@
 package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.CartItemEntity;
+import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Cart;
 import com.example.bookstoreapp.models.CartItem;
 import com.example.bookstoreapp.models.CartItemState;
@@ -40,6 +41,9 @@ public class CartItemServiceImpl implements CartItemService {
   public CartItem addItem(Long catalogItemId) {
     CatalogItem catalogItem = catalogItemService.findById(catalogItemId);
     CartItemEntity savedCartItemEntity = findCartItemEntity(catalogItemId);
+    if(catalogItem.getStockQuantity() <= 0){
+      throw new AppRuntimeException("Item is out of stock");
+    }
     if (savedCartItemEntity == null) { // create new entity
       CartItemEntity newCartItemEntity = new CartItemEntity();
       newCartItemEntity.setId(IdGenerator.getLongId());
@@ -66,8 +70,9 @@ public class CartItemServiceImpl implements CartItemService {
     Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
 
     // Adding a predicate to the query to filter by catalogItemId
-    Predicate predicate = criteriaBuilder.equal(root.get("catalogItemId"), catalogItemId);
-    criteriaQuery.where(predicate);
+    Predicate predicate1 = criteriaBuilder.equal(root.get("catalogItemId"), catalogItemId);
+    Predicate predicate2 = criteriaBuilder.equal(root.get("cartId"), userSessionService.getUserId());
+    criteriaQuery.where(predicate1, predicate2);
 
     List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery)
         .setMaxResults(1)
