@@ -4,6 +4,7 @@ import com.example.bookstoreapp.entities.CatalogItemEntity;
 import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CatalogItemEntityRepository;
 import com.example.bookstoreapp.services.CatalogItemService;
+import com.example.bookstoreapp.utils.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,14 @@ public class CatalogItemServiceImpl implements CatalogItemService {
 
   @Override
   public CatalogItem create(CatalogItem catalogItem) {
-    catalogItem.setId(System.currentTimeMillis());
+    catalogItem.setId(IdGenerator.getLongId());
+    CatalogItemEntity savedEntity = catalogItemEntityRepository.save(catalogItem.toEntity());
+    return new CatalogItem().fromEntity(savedEntity);
+  }
+
+  @Override
+  public CatalogItem update(Long catalogItemId, CatalogItem catalogItem) {
+    catalogItem.setId(catalogItemId);
     CatalogItemEntity savedEntity = catalogItemEntityRepository.save(catalogItem.toEntity());
     return new CatalogItem().fromEntity(savedEntity);
   }

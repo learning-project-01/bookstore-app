@@ -19,9 +19,12 @@ public class CatalogItemEntity {
 
   private Float price;
 
-  public CatalogItemEntity(Long id, String name, Float price) {
+  private Integer stockQuantity;
+
+  public CatalogItemEntity(Long id, String name, Float price, Integer stockQuantity) {
     this.id = id;
     this.name = name;
     this.price = price;
+    this.stockQuantity = stockQuantity;
   }
 }
