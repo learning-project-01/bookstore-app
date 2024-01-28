@@ -1,6 +1,7 @@
 package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.CatalogItemEntity;
+import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CatalogItemEntityRepository;
 import com.example.bookstoreapp.services.CatalogItemService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -29,6 +31,11 @@ public class CatalogItemServiceImpl implements CatalogItemService {
   @Override
   public CatalogItem update(Long catalogItemId, CatalogItem catalogItem) {
     catalogItem.setId(catalogItemId);
+    try {
+      CatalogItem savedCatalogItem = findById(catalogItemId);
+    } catch (NoSuchElementException e) {
+      throw new AppRuntimeException("Item not found in catalog");
+    }
     CatalogItemEntity savedEntity = catalogItemEntityRepository.save(catalogItem.toEntity());
     return new CatalogItem().fromEntity(savedEntity);
   }
