@@ -8,7 +8,7 @@ public class IdGenerator {
     return System.nanoTime();
   }
 
-  private static String getUUID() {
+  public static String getUUID() {
     return UUID.randomUUID().toString();
   }
 }
