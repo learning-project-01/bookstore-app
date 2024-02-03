@@ -26,4 +26,9 @@ public class CartController {
   public Cart getCartSummary(){
     return cartItemService.getCartSummary(0L);
   }
+
+  @GetMapping("/checkout")
+  public Cart checkout(){
+    return cartItemService.doCheckout(0L);
+  }
 }

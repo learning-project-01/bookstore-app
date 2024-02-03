@@ -7,4 +7,6 @@ public interface CartItemService {
   CartItem addItem(Long catalogItemId);
 
   Cart getCartSummary(Long cartId);
+
+  Cart doCheckout(Long cartId);
 }

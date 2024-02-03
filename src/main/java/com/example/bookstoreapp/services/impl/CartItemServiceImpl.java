@@ -81,23 +81,35 @@ public class CartItemServiceImpl implements CartItemService {
     return resultList.isEmpty() ? null : resultList.get(0);
   }
 
-  private List<CartItemEntity> findCartItemEntities() {
+  private List<CartItemEntity> findCartItemEntities(CartItemState cartItemState) {
     // fetch from db using criteria query
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
     Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
 
+    List<Predicate> predicateList = new ArrayList<>();
     // Adding a predicate to the query to filter by cartId
-    Predicate predicate = criteriaBuilder.equal(root.get("cartId"), userSessionService.getUserId());
-    criteriaQuery.where(predicate);
+    Predicate cartIdPredicate = criteriaBuilder.equal(root.get("cartId"), userSessionService.getUserId());
+    predicateList.add(cartIdPredicate);
+    if(cartItemState != null){
+      Predicate statePredicate = criteriaBuilder.equal(root.get("state"),cartItemState.getWeight());
+      predicateList.add(statePredicate);
+    }
+    criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+    // select * from cart_item where cart_id=?
+    // select * from cart_item where cart_id=? and state=?
 
     return entityManager.createQuery(criteriaQuery).getResultList();
   }
 
   @Override
   public Cart getCartSummary(Long cartId) {
+    return getCartSummary(cartId, null);
+  }
+
+  private Cart getCartSummary(Long cartId, CartItemState cartItemState) {
     cartId = userSessionService.getUserId();
-    List<CartItemEntity> cartItemEntities = findCartItemEntities();
+    List<CartItemEntity> cartItemEntities = findCartItemEntities(cartItemState);
 
     List<CartItem> cartItems = new ArrayList<>();
     for (CartItemEntity entity : cartItemEntities) {
@@ -115,5 +127,10 @@ public class CartItemServiceImpl implements CartItemService {
     cart.setTotal(buyItemsTotalPrice.floatValue());
     cart.setItems(cartItems);
     return cart;
+  }
+
+  @Override
+  public Cart doCheckout(Long cartId) {
+    return getCartSummary(cartId, CartItemState.BUY_NOW);
   }
 }
