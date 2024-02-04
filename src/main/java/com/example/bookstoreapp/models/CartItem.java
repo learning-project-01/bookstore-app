@@ -27,7 +27,7 @@ public class CartItem extends CatalogItem {
     this.setCartItemState(CartItemState.mapWeighToState(cartItemEntity.getState()));
     this.setQuantity(cartItemEntity.getQuantity());
     this.setUnitPrice(catalogItem.getPrice());
-    this.setTotal(this.getUnitPrice() * this.getUnitPrice());
+    this.setTotal(this.getUnitPrice() * this.getQuantity());
     return this;
   }
 }
