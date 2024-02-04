@@ -31,9 +31,27 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String authenticate(User user) {
+    /**
+     *
+     * lookup db and comparing strings: cpu usage costly.
+     * to avoid cpu usage we are using cache memory
+     *
+     * map.put(userEmail_1, uuid_1)
+     *
+     * if userEmail is in cache
+     *   then return the existing UUID associated with userEmail
+     *  else {
+     *    what ever written below and put
+     *    userEmail & UUID in cache
+     *  }
+     */
     UserEntity entity = userEntityRepository.findByEmail(user.getEmail());
+    if(entity == null){
+      throw new AppRuntimeException("login failed");
+    }
     String encodedPassword = entity.getPassword();
     boolean passwordMatched = passwordEncoder.matches(user.getPassword(), encodedPassword);
+
     if(passwordMatched){
       return UUID.randomUUID().toString();
     }
