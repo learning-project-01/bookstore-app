@@ -8,6 +8,6 @@ class CartItemStateTest {
     void testMapWeightToState() {
         assertEquals(CartItemState.IN_CART, CartItemState.mapWeighToState(0));
         assertEquals(CartItemState.SAVE_LATER, CartItemState.mapWeighToState(1));
-        assertEquals(CartItemState.BUY_NOW, CartItemState.mapWeighToState(2));
+        assertEquals(CartItemState.BUY_NOW,CartItemState.mapWeighToState(2));
     }
 }
