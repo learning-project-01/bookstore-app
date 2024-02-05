@@ -4,4 +4,5 @@ import com.example.bookstoreapp.models.User;
 
 public interface UserService {
   User createUser(User user);
+  String authenticate(User user);
 }
