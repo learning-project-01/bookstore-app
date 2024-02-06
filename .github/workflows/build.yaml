@@ -3,6 +3,7 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "main" ]
+    paths: [ '**.java', '.github/workflows/build.yml', 'pom.xml' ]
   pull_request:
     branches: [ "main", "release/**" , "bugfix/**", "feature/**", "task/**"]
 
