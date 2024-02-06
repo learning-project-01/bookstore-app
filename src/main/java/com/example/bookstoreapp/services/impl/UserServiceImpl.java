@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -53,7 +54,9 @@ public class UserServiceImpl implements UserService {
     boolean passwordMatched = passwordEncoder.matches(user.getPassword(), encodedPassword);
 
     if(passwordMatched){
-      return UUID.randomUUID().toString();
+      String uuidString = UUID.randomUUID().toString();
+      String base64EncodedUUID = Base64.getEncoder().encodeToString(uuidString.getBytes());
+      return base64EncodedUUID;
     }
     throw new AppRuntimeException("login failed");
   }
