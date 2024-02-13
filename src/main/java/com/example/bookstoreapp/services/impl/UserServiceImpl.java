@@ -1,5 +1,6 @@
 package com.example.bookstoreapp.services.impl;
 
+import com.example.bookstoreapp.auth.AuthService;
 import com.example.bookstoreapp.entities.UserEntity;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.User;
@@ -18,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserEntityRepository userEntityRepository;
+
+  @Autowired
+  private AuthService authService;
 
   private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -54,9 +58,8 @@ public class UserServiceImpl implements UserService {
     boolean passwordMatched = passwordEncoder.matches(user.getPassword(), encodedPassword);
 
     if(passwordMatched){
-      String uuidString = UUID.randomUUID().toString();
-      String base64EncodedUUID = Base64.getEncoder().encodeToString(uuidString.getBytes());
-      return base64EncodedUUID;
+      user = new User().fromEntity(entity);
+      return authService.createAuthenticationContext(user);
     }
     throw new AppRuntimeException("login failed");
   }

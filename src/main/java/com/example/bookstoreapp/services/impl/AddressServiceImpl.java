@@ -1,11 +1,10 @@
 package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.AddressEntity;
-import com.example.bookstoreapp.entities.CartItemEntity;
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.repositories.AddressRepository;
 import com.example.bookstoreapp.services.AddressService;
-import com.example.bookstoreapp.services.UserSessionService;
+import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.IdGenerator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -28,12 +26,12 @@ public class AddressServiceImpl implements AddressService {
   private EntityManager entityManager;
 
   @Autowired
-  private UserSessionService userSessionService;
+  private UserContextService userContextService;
 
   @Override
   public Address create(Address address) {
     address.setId(IdGenerator.getLongId());
-    address.setUserId(userSessionService.getUserId());
+    address.setUserId(userContextService.getUserId());
     AddressEntity entity = address.toEntity();
     entity = addressRepository.save(entity);
     return address.fromEntity(entity);
@@ -57,7 +55,7 @@ public class AddressServiceImpl implements AddressService {
     Root<AddressEntity> root = criteriaQuery.from(AddressEntity.class);
 
     // Adding a predicate to the query to filter by cartId
-    Predicate predicate = criteriaBuilder.equal(root.get("userId"), userSessionService.getUserId());
+    Predicate predicate = criteriaBuilder.equal(root.get("userId"), userContextService.getUserId());
     criteriaQuery.where(predicate);
 
     List<AddressEntity> addressEntities = entityManager.createQuery(criteriaQuery).getResultList();

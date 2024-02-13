@@ -9,7 +9,7 @@ import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CartItemEntityRepository;
 import com.example.bookstoreapp.services.CartItemService;
 import com.example.bookstoreapp.services.CatalogItemService;
-import com.example.bookstoreapp.services.UserSessionService;
+import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.IdGenerator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -29,7 +29,7 @@ public class CartItemServiceImpl implements CartItemService {
   private CatalogItemService catalogItemService;
 
   @Autowired
-  private UserSessionService userSessionService;
+  private UserContextService userContextService;
 
   @Autowired
   private EntityManager entityManager;
@@ -47,7 +47,7 @@ public class CartItemServiceImpl implements CartItemService {
     if (savedCartItemEntity == null) { // create new entity
       CartItemEntity newCartItemEntity = new CartItemEntity();
       newCartItemEntity.setId(IdGenerator.getLongId());
-      newCartItemEntity.setCartId(userSessionService.getUserId());
+      newCartItemEntity.setCartId(userContextService.getUserId());
       newCartItemEntity.setQuantity(1);
       newCartItemEntity.setCatalogItemId(catalogItemId);
       newCartItemEntity.setState(CartItemState.BUY_NOW.getWeight());
@@ -71,7 +71,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     // Adding a predicate to the query to filter by catalogItemId
     Predicate predicate1 = criteriaBuilder.equal(root.get("catalogItemId"), catalogItemId);
-    Predicate predicate2 = criteriaBuilder.equal(root.get("cartId"), userSessionService.getUserId());
+    Predicate predicate2 = criteriaBuilder.equal(root.get("cartId"), userContextService.getUserId());
     criteriaQuery.where(predicate1, predicate2);
 
     List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery)
@@ -89,7 +89,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     List<Predicate> predicateList = new ArrayList<>();
     // Adding a predicate to the query to filter by cartId
-    Predicate cartIdPredicate = criteriaBuilder.equal(root.get("cartId"), userSessionService.getUserId());
+    Predicate cartIdPredicate = criteriaBuilder.equal(root.get("cartId"), userContextService.getUserId());
     predicateList.add(cartIdPredicate);
     if(cartItemState != null){
       Predicate statePredicate = criteriaBuilder.equal(root.get("state"),cartItemState.getWeight());
@@ -108,7 +108,7 @@ public class CartItemServiceImpl implements CartItemService {
   }
 
   private Cart getCartSummary(Long cartId, CartItemState cartItemState) {
-    cartId = userSessionService.getUserId();
+    cartId = userContextService.getUserId();
     List<CartItemEntity> cartItemEntities = findCartItemEntities(cartItemState);
 
     List<CartItem> cartItems = new ArrayList<>();

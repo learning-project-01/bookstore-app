@@ -2,7 +2,7 @@ package com.example.bookstoreapp.controllers;
 
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.services.AddressService;
-import com.example.bookstoreapp.services.UserSessionService;
+import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.IdGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +26,7 @@ class AddressControllerTest {
     @Mock
     AddressService addressService;
     @Mock
-    UserSessionService userSessionService;
+    UserContextService userContextService;
 
     @Test
     void create() {
@@ -34,8 +34,8 @@ class AddressControllerTest {
         Long addressID = IdGenerator.getLongId();
         address.setId(addressID);
 
-        Mockito.when(userSessionService.getUserId()).thenReturn(434175530633000L);
-        address.setUserId(userSessionService.getUserId());
+        Mockito.when(userContextService.getUserId()).thenReturn(434175530633000L);
+        address.setUserId(userContextService.getUserId());
 
         Mockito.when(addressService.create(Mockito.any(Address.class))).thenReturn(address);
         Address createdAddress = addressController.create(address);
