@@ -1,7 +1,7 @@
 Only for learning purpose.
 ## How to login into the application:
 
-https://github.com/learning-project-01/bookstore-app/issues/71
+Login process written here: https://github.com/learning-project-01/bookstore-app/issues/71
 
 ## Postman Test Script To Set Env Variable From Response
 
