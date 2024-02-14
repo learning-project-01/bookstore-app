@@ -1,6 +1,21 @@
 Only for learning purpose.
 
-## github Actions
+## Postman Test Script To Set Env Variable From Response
+
+```javascript 
+var responseBody = pm.response.json();
+
+// Extract the value field
+var value = responseBody.value;
+
+// Set the value as an environment variable
+pm.environment.set("X-AUTH-TOKEN", value);
+
+// Log the environment variable for verification
+console.log("Environment variable set:", pm.environment.get("X-AUTH-TOKEN"));
+```
+
+## Github Actions
 https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
 
 https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven

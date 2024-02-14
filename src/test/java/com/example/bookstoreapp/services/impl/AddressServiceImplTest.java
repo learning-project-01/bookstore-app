@@ -3,19 +3,15 @@ package com.example.bookstoreapp.services.impl;
 import com.example.bookstoreapp.entities.AddressEntity;
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.repositories.AddressRepository;
-import com.example.bookstoreapp.services.UserSessionService;
+import com.example.bookstoreapp.services.UserContextService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -30,7 +26,7 @@ class AddressServiceImplTest {
     @InjectMocks
     AddressServiceImpl addressServiceImpl;
     @Mock
-    UserSessionService userSessionService;
+    UserContextService userContextService;
     @Mock
     AddressRepository addressRepository;
     @Mock
@@ -45,7 +41,7 @@ class AddressServiceImplTest {
         entity.setUserId(123L);
         entity.setId(1L);
 
-        when(userSessionService.getUserId()).thenReturn(123L);
+        when(userContextService.getUserId()).thenReturn(123L);
         when(addressRepository.save(any(AddressEntity.class))).thenReturn(entity);
 
         Address createdAdd = addressServiceImpl.create(address);

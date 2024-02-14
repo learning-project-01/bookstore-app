@@ -1,5 +1,6 @@
 package com.example.bookstoreapp.controllers;
 
+import com.example.bookstoreapp.auth.Token;
 import com.example.bookstoreapp.models.User;
 import com.example.bookstoreapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ public class UserController {
   }
 
   @PostMapping("/login")
-  public String authenticate(@RequestBody User user){
-    return userService.authenticate(user);
+  public Token authenticate(@RequestBody User user){
+    String tokenValue = userService.authenticate(user);
+    Token token = new Token();
+    token.setEncodedTokenValue(tokenValue);
+    return token;
   }
 }
