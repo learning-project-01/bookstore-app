@@ -12,7 +12,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter implements Filter {
 
-  private static final String[] patterns = {"/api/**", "/user/login", "/user/signup", "/health"};
+  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**", "/user/login", "/user/signup", "/health"};
 
   public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
 
@@ -35,7 +34,7 @@ public class AuthenticationFilter implements Filter {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     log.info("filter executed for url: {}", request.getRequestURL());
     log.info("filter executed for uri: {}", request.getRequestURI());
-    if (matchUriPattern(request.getRequestURI())) {
+    if (isPublicUri(request.getRequestURI())) {
       filterChain.doFilter(servletRequest, servletResponse);
       return;
     }
@@ -57,8 +56,8 @@ public class AuthenticationFilter implements Filter {
     Filter.super.destroy();
   }
 
-  private boolean matchUriPattern(String requestUri) {
-    for (String pattern : patterns) {
+  private boolean isPublicUri(String requestUri) {
+    for (String pattern : PUBLIC_URI_PATTERNS) {
       boolean matched = AppUtils.matchesPattern(pattern, requestUri);
       if (matched) {
         return true;
