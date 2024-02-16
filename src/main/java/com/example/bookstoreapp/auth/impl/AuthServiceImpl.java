@@ -20,7 +20,7 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
   @Value("${auth.token.ttl.minutes: 60}")
-  private Long authTokenTtl;
+  private Long authTokenTtl=3600L;
 
   @Autowired
   private AuthCacheClient authCacheClient;
