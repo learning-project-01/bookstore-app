@@ -14,6 +14,7 @@ public class Address {
   private String state;
   private String country;
   private String postalCode;
+  private AddressType addressType;
 
 
   public AddressEntity toEntity(){
@@ -26,6 +27,7 @@ public class Address {
     addressEntity.setState(this.getState());
     addressEntity.setCountry(this.getCountry());
     addressEntity.setPostalCode(this.getPostalCode());
+    addressEntity.setAddressType(this.getAddressType());
     return addressEntity;
   }
 
@@ -38,6 +40,7 @@ public class Address {
     this.setState(entity.getState());
     this.setCountry(entity.getCountry());
     this.setPostalCode(entity.getPostalCode());
+    this.setAddressType(AddressType.valueOf(entity.getAddressType().name().toUpperCase()));
     return this;
   }
 

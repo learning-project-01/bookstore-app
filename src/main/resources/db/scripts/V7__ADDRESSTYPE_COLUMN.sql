@@ -1,0 +1,2 @@
+ALTER TABLE address
+    ADD COLUMN addressType VARCHAR(30) DEFAULT 'HOME';

@@ -3,12 +3,7 @@ package com.example.bookstoreapp.filters;
 import com.example.bookstoreapp.auth.AuthService;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.utils.AppUtils;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +14,7 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter implements Filter {
 
-  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**", "/user/login", "/user/signup", "/health"};
+    private static final String[] PUBLIC_URI_PATTERNS = {"/**", "/api/**", "/user/login", "/user/signup", "/health"};
 
   public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
 
