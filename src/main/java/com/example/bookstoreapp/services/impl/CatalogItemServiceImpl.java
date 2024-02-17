@@ -56,4 +56,5 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     }
     return items;
   }
+
 }

@@ -133,4 +133,5 @@ public class CartItemServiceImpl implements CartItemService {
   public Cart doCheckout(Long cartId) {
     return getCartSummary(cartId, CartItemState.BUY_NOW);
   }
+
 }
