@@ -1,4 +1,14 @@
 Only for learning purpose.
+
+> [!WARNING]
+> - Must do code formatting.
+> - Remove or dont add extra lines or spaces.
+> - Use better naming convention.
+> - Write unit test cases using mockito.
+> - Link issue with pull request.
+> - Add screenshot to pull request.
+
+
 ## How to login into the application:
 
 Login process written here: https://github.com/learning-project-01/bookstore-app/issues/71
