@@ -11,110 +11,71 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.TestPropertySource;
-
+import java.util.Base64;
 import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 @TestPropertySource(properties = {"auth.token.ttl.minutes=60"})
-
 class AuthServiceImplTest {
-
     @Mock
     private AuthCacheClient authCacheClient;
-
-
     @Mock
     private UserContextService userContextService;
-
     @InjectMocks
-    private AuthServiceImpl authService;
-
+    private AuthServiceImpl authServiceImpl;
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
     @Test
     void testCreateAuthenticationContext() {
-        // Given
         User user = new User();
         user.setEmail("test@example.com");
-
-        // When
-        String token = authService.createAuthenticationContext(user);
-
-        // Then
+        String token = authServiceImpl.createAuthenticationContext(user);
         assertNotNull(token);
         verify(authCacheClient, times(1)).put(anyString(), any(AuthenticationContext.class));}
-
-
     @Test
     void testDestroyAuthenticationContext() {
-        // Given
         String tokenStr = UUID.randomUUID().toString();
+        String base64Encoded = Base64.getEncoder().encodeToString(tokenStr.getBytes());
         AuthenticationContext context = new AuthenticationContext();
         when(authCacheClient.get(anyString())).thenReturn(context);
-
-        // When
-        boolean result = authService.destroyAuthenticationContext(tokenStr);
-
-        // Then
+        boolean result = authServiceImpl.destroyAuthenticationContext(base64Encoded);
         assertTrue(result);
-        verify(authCacheClient, times(1)).remove(anyString(), anyString());
+        verify(authCacheClient, times(1)).remove( anyString());
     }
-
-    @Test
+   @Test
     void testDestroyAuthenticationContext_NotFound() {
-        // Given
         String tokenStr = UUID.randomUUID().toString();
         when(authCacheClient.get(anyString())).thenReturn(null);
-
-        // When
-        boolean result = authService.destroyAuthenticationContext(tokenStr);
-
-        // Then
+        boolean result = authServiceImpl.destroyAuthenticationContext(tokenStr);
         assertFalse(result);
         verify(authCacheClient, never()).remove(anyString(), anyString());
     }
-
     @Test
     void testSetUserContext() {
-        // Given
         String tokenStr = UUID.randomUUID().toString();
         AuthenticationContext context = new AuthenticationContext();
         context.setExpiryAt(System.currentTimeMillis() + 10000);
         when(authCacheClient.get(anyString())).thenReturn(context);
-
-        // When
-        assertDoesNotThrow(() -> authService.setUserContext(tokenStr));
-
-        // Then
+        assertDoesNotThrow(() -> authServiceImpl.setUserContext(tokenStr));
         verify(userContextService, times(1)).setUser(any(User.class));
     }
-
-    @Test
+   @Test
     void testSetUserContext_NullAuthenticationContext() {
-        // Given
         String tokenStr = UUID.randomUUID().toString();
         when(authCacheClient.get(anyString())).thenReturn(null);
-
-        // When, Then
-        assertThrows(AppRuntimeException.class, () -> authService.setUserContext(tokenStr));
+        assertThrows(AppRuntimeException.class, () -> authServiceImpl.setUserContext(tokenStr));
         verify(userContextService, never()).setUser(any(User.class));
     }
-
     @Test
     void testSetUserContext_ExpiredToken() {
-        // Given
         String tokenStr = UUID.randomUUID().toString();
         AuthenticationContext context = new AuthenticationContext();
         context.setExpiryAt(System.currentTimeMillis() - 10000);
         when(authCacheClient.get(anyString())).thenReturn(context);
-
-        // When, Then
-        assertThrows(AppRuntimeException.class, () -> authService.setUserContext(tokenStr));
+        assertThrows(AppRuntimeException.class, () -> authServiceImpl.setUserContext(tokenStr));
         verify(userContextService, never()).setUser(any(User.class));
     }
 }

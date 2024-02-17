@@ -20,13 +20,21 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
   @Value("${auth.token.ttl.minutes: 60}")
-  private Long authTokenTtl=3600L;
+  private Long authTokenTtl;
 
   @Autowired
   private AuthCacheClient authCacheClient;
 
   @Autowired
   private UserContextService userContextService;
+  public Long getAuthTokenTtl() {
+    return authTokenTtl;
+  }
+
+  // Setter method for authTokenTtl
+  public void setAuthTokenTtl(Long authTokenTtl) {
+    this.authTokenTtl = authTokenTtl;
+  }
 
   @Override
   public String createAuthenticationContext(User user) {
@@ -35,7 +43,6 @@ public class AuthServiceImpl implements AuthService {
     context.setUserId(user.getEmail());
     context.setHeaderTokenUUID(UUID.randomUUID().toString());
     context.setExpiryAt(authTokenTtl * 60 * 1000 + System.currentTimeMillis());
-    authCacheClient.put(context.getUserId(), context);
     authCacheClient.put(context.getHeaderTokenUUID(), context);
     return AppUtils.getEncodedString(context.getHeaderTokenUUID());
   }
