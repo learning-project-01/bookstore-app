@@ -14,9 +14,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class OrderEntity {
     @Id
-    private long order_id;
-    private long customer_id;
-    private Date order_time;
-    private double total_amount;
-    private String shipping_address;
+    private long orderId;
+    private long customerID;
+    private Date orderTime;
+    private double totalAmount;
+    private String shippingAddress;
 }

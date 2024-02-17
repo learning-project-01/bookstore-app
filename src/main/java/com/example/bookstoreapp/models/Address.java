@@ -20,14 +20,14 @@ public class Address {
   public AddressEntity toEntity(){
     AddressEntity addressEntity = new AddressEntity();
     addressEntity.setId(this.getId());
-    addressEntity.setUserId(this.getUserId());
+     addressEntity.setUserId(this.getUserId());
     addressEntity.setLine1(this.getLine1());
     addressEntity.setLine2(this.getLine2());
     addressEntity.setCity(this.getCity());
     addressEntity.setState(this.getState());
     addressEntity.setCountry(this.getCountry());
     addressEntity.setPostalCode(this.getPostalCode());
-    addressEntity.setAddressType(this.getAddressType());
+    addressEntity.setAddressType(this.getAddressType().getWeight());
     return addressEntity;
   }
 
@@ -40,7 +40,7 @@ public class Address {
     this.setState(entity.getState());
     this.setCountry(entity.getCountry());
     this.setPostalCode(entity.getPostalCode());
-    this.setAddressType(AddressType.valueOf(entity.getAddressType().name().toUpperCase()));
+    this.setAddressType(AddressType.mapWeightToType(entity.getAddressType()));
     return this;
   }
 

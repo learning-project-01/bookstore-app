@@ -4,5 +4,5 @@ CREATE TABLE orders
     customer_id      BIGINT,
     order_time       TIMESTAMP,
     total_amount     DECIMAL(10, 2),
-    shipping_address VARCHAR(255)
+    shipping_address text
 );

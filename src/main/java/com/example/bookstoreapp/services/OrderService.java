@@ -5,9 +5,9 @@ import com.example.bookstoreapp.models.Order;
 import java.util.List;
 
 public interface OrderService {
-     Order createOrder(Order order);
+    Order createOrder(Order order);
 
-     Order orderSummary(Long order_id);
+    Order orderSummary(Long orderId);
 
-     List<Order> allOrders(Long customer_id);
+    List<Order> allOrders(Long customerId);
 }

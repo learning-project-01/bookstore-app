@@ -13,12 +13,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order orderSummary(Long order_id) {
+    public Order orderSummary(Long orderId) {
         return null;
     }
 
     @Override
-    public List<Order> allOrders(Long customer_id) {
+    public List<Order> allOrders(Long customerId) {
         return null;
     }
 }

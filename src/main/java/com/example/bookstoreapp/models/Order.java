@@ -16,20 +16,20 @@ public class Order {
 
     public OrderEntity toEntity() {
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setOrder_id(this.getOrder_id());
-        orderEntity.setCustomer_id(this.getCustomer_id());
-        orderEntity.setOrder_time(this.getOrder_time());
-        orderEntity.setTotal_amount(this.getTotal_amount());
-        orderEntity.setShipping_address(this.getShipping_address());
+        orderEntity.setOrderId(this.getOrder_id());
+        orderEntity.setCustomerID(this.getCustomer_id());
+        orderEntity.setOrderTime(this.getOrder_time());
+        orderEntity.setTotalAmount(this.getTotal_amount());
+        orderEntity.setShippingAddress(this.getShipping_address());
         return orderEntity;
     }
 
     public Order fromEntity(OrderEntity orderEntity) {
-        this.setOrder_id(orderEntity.getOrder_id());
-        this.setCustomer_id(orderEntity.getCustomer_id());
-        this.setOrder_time(orderEntity.getOrder_time());
-        this.setTotal_amount(orderEntity.getTotal_amount());
-        this.setShipping_address(orderEntity.getShipping_address());
+        this.setOrder_id(orderEntity.getOrderId());
+        this.setCustomer_id(orderEntity.getCustomerID());
+        this.setOrder_time(orderEntity.getOrderTime());
+        this.setTotal_amount(orderEntity.getTotalAmount());
+        this.setShipping_address(orderEntity.getShippingAddress());
         return this;
     }
 
