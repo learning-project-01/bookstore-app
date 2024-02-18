@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public boolean destroyAuthenticationContext(String tokenStr) {
     tokenStr = StringUtils.isEmpty(tokenStr) ? StringUtils.EMPTY : AppUtils.getDecodedString(tokenStr);
-    AuthenticationContext context = authCacheClient.get(AppUtils.getDecodedString(tokenStr));
+    AuthenticationContext context = authCacheClient.get(tokenStr);
     if(context == null){
       log.warn("authentication context not found");
       return false;
@@ -75,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
       throw new AppRuntimeException("token expired");
     }
 
+    log.info("expiry token: {}", context.getExpiryAt());
     userContextService.setUser(context.getUser());
     log.info("user context set for user: {}", context.getUser());
   }

@@ -14,11 +14,17 @@ public class User {
   private UserRole role;
 
   public String getPassword() {
+    if(this.password == null){
+      this.password = new char[]{};
+    }
     return new String(password);
   }
 
   @JsonSetter
   public void setPassword(String password) {
+    if(password == null){
+      password = "";
+    }
     this.password = password.toCharArray();
     password = null;
   }
