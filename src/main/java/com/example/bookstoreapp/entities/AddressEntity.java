@@ -1,5 +1,6 @@
 package com.example.bookstoreapp.entities;
 
+import com.example.bookstoreapp.models.AddressType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,5 +20,6 @@ public class AddressEntity {
   private String state;
   private String country;
   private String postalCode;
+  private int addressType;
 
 }

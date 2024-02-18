@@ -2,6 +2,7 @@ package com.example.bookstoreapp.models;
 
 import com.example.bookstoreapp.entities.AddressEntity;
 import lombok.Data;
+import com.example.bookstoreapp.models.AddressType;
 
 @Data
 public class Address {
@@ -14,6 +15,7 @@ public class Address {
   private String state;
   private String country;
   private String postalCode;
+  private AddressType AddressType;
 
 
   public AddressEntity toEntity(){
@@ -26,6 +28,7 @@ public class Address {
     addressEntity.setState(this.getState());
     addressEntity.setCountry(this.getCountry());
     addressEntity.setPostalCode(this.getPostalCode());
+    this.setAddressType(com.example.bookstoreapp.models.AddressType.mapWeighToType(addressEntity.getAddressType()));
     return addressEntity;
   }
 
@@ -38,6 +41,8 @@ public class Address {
     this.setState(entity.getState());
     this.setCountry(entity.getCountry());
     this.setPostalCode(entity.getPostalCode());
+    //this.setAddressType(entity.getAddressType());
+    this.setAddressType(com.example.bookstoreapp.models.AddressType.mapWeighToType(entity.getAddressType()));
     return this;
   }
 

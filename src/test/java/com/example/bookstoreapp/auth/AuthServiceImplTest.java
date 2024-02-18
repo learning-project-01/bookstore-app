@@ -47,7 +47,6 @@ public class AuthServiceImplTest {
     MockitoAnnotations.openMocks(this);
     ReflectionTestUtils.setField(authServiceImpl, "authTokenTtl", 60L);
   }
-
   @AfterEach
   public void afterEach(){
     Mockito.reset(authCacheClient, userContextService);

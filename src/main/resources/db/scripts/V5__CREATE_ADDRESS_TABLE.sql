@@ -8,3 +8,5 @@ CREATE TABLE address (
  country VARCHAR(100),
  postal_code INT
 );
+ALTER TABLE address
+    ADD COLUMN addressType INT(30);
