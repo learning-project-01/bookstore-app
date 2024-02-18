@@ -27,6 +27,14 @@ public class AuthServiceImpl implements AuthService {
 
   @Autowired
   private UserContextService userContextService;
+  public Long getAuthTokenTtl() {
+    return authTokenTtl;
+  }
+
+  // Setter method for authTokenTtl
+  public void setAuthTokenTtl(Long authTokenTtl) {
+    this.authTokenTtl = authTokenTtl;
+  }
 
   @Override
   public String createAuthenticationContext(User user) {
@@ -35,7 +43,6 @@ public class AuthServiceImpl implements AuthService {
     context.setUserId(user.getEmail());
     context.setHeaderTokenUUID(UUID.randomUUID().toString());
     context.setExpiryAt(authTokenTtl * 60 * 1000 + System.currentTimeMillis());
-    authCacheClient.put(context.getUserId(), context);
     authCacheClient.put(context.getHeaderTokenUUID(), context);
     return AppUtils.getEncodedString(context.getHeaderTokenUUID());
   }
@@ -43,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public boolean destroyAuthenticationContext(String tokenStr) {
     tokenStr = StringUtils.isEmpty(tokenStr) ? StringUtils.EMPTY : AppUtils.getDecodedString(tokenStr);
-    AuthenticationContext context = authCacheClient.get(AppUtils.getDecodedString(tokenStr));
+    AuthenticationContext context = authCacheClient.get(tokenStr);
     if(context == null){
       log.warn("authentication context not found");
       return false;
@@ -68,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
       throw new AppRuntimeException("token expired");
     }
 
+    log.info("expiry token: {}", context.getExpiryAt());
     userContextService.setUser(context.getUser());
     log.info("user context set for user: {}", context.getUser());
   }

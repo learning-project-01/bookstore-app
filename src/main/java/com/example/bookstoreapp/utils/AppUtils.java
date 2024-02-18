@@ -16,6 +16,8 @@ public class AppUtils {
     return new String(Base64.getDecoder().decode(base64Str.getBytes(StandardCharsets.UTF_8)));
   }
 
+
+
   public static boolean matchesPattern(String pattern, String requestUri) {
     AntPathMatcher matcher = new AntPathMatcher();
     return matcher.match(pattern, requestUri);
