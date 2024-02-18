@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,8 +16,8 @@ import java.util.Date;
 public class OrderEntity {
     @Id
     private long orderId;
-    private long customerID;
-    private Date orderTime;
+    private long customerId;
+    private LocalDateTime orderTime;
     private double totalAmount;
     private String shippingAddress;
 }

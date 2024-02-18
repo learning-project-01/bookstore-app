@@ -3,33 +3,33 @@ package com.example.bookstoreapp.models;
 import com.example.bookstoreapp.entities.OrderEntity;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 public class Order {
-    private long order_id;
-    private long customer_id;
-    private Date order_time;
-    private double total_amount;
-    private String shipping_address;
-
+    private long orderId;
+    private long customerId;
+    private LocalDateTime orderTime;
+    private double totalAmount;
+    private String shippingAddress;
 
     public OrderEntity toEntity() {
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setOrderId(this.getOrder_id());
-        orderEntity.setCustomerID(this.getCustomer_id());
-        orderEntity.setOrderTime(this.getOrder_time());
-        orderEntity.setTotalAmount(this.getTotal_amount());
-        orderEntity.setShippingAddress(this.getShipping_address());
+        orderEntity.setOrderId(this.getOrderId());
+        orderEntity.setCustomerId(this.getCustomerId());
+        orderEntity.setOrderTime(this.getOrderTime());
+        orderEntity.setTotalAmount(this.getTotalAmount());
+        orderEntity.setShippingAddress(this.getShippingAddress());
         return orderEntity;
     }
 
     public Order fromEntity(OrderEntity orderEntity) {
-        this.setOrder_id(orderEntity.getOrderId());
-        this.setCustomer_id(orderEntity.getCustomerID());
-        this.setOrder_time(orderEntity.getOrderTime());
-        this.setTotal_amount(orderEntity.getTotalAmount());
-        this.setShipping_address(orderEntity.getShippingAddress());
+        this.setOrderId(orderEntity.getOrderId());
+        this.setCustomerId(orderEntity.getCustomerId());
+        this.setOrderTime(orderEntity.getOrderTime());
+        this.setTotalAmount(orderEntity.getTotalAmount());
+        this.setShippingAddress(orderEntity.getShippingAddress());
         return this;
     }
 

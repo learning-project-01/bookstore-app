@@ -2,6 +2,7 @@ package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.AddressEntity;
 import com.example.bookstoreapp.models.Address;
+import com.example.bookstoreapp.models.AddressType;
 import com.example.bookstoreapp.repositories.AddressRepository;
 import com.example.bookstoreapp.services.UserContextService;
 import jakarta.persistence.EntityManager;
@@ -37,6 +38,7 @@ class AddressServiceImplTest {
     @Test
     void create() {
         Address address = new Address();
+        address.setAddressType(AddressType.HOME);
         AddressEntity entity = address.toEntity();
         entity.setUserId(123L);
         entity.setId(1L);
