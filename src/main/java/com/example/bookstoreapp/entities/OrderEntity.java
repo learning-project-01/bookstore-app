@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "orders")
@@ -17,6 +16,7 @@ public class OrderEntity {
     @Id
     private long orderId;
     private long customerId;
+    private long addressId;
     private LocalDateTime orderTime;
     private double totalAmount;
     private String shippingAddress;

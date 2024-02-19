@@ -14,10 +14,14 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @GetMapping
-    public Order crateOrder(Order order) {
+    @PostMapping
+    public Order crateOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
+//    @GetMapping
+//    public Order crateOrder(Order order) {
+//        return orderService.createOrder(order);
+//    }
 
     @GetMapping("/{orderId}")
     public Order orderSummary(@PathVariable("orderId") long orderId) {

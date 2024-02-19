@@ -5,11 +5,9 @@ import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.models.Cart;
 import com.example.bookstoreapp.models.Order;
+import com.example.bookstoreapp.repositories.CatalogItemEntityRepository;
 import com.example.bookstoreapp.repositories.OrderEntityRepository;
-import com.example.bookstoreapp.services.AddressService;
-import com.example.bookstoreapp.services.CartItemService;
-import com.example.bookstoreapp.services.OrderService;
-import com.example.bookstoreapp.services.UserContextService;
+import com.example.bookstoreapp.services.*;
 import com.example.bookstoreapp.utils.IdGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -28,18 +26,19 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
-    UserContextService userContextService;
-
+    CatalogItemEntityRepository catalogItemEntityRepository;
     @Autowired
-    CartItemService cartItemService;
-
+    private UserContextService userContextService;
     @Autowired
-    AddressService addressService;
-
+    private CartItemService cartItemService;
     @Autowired
-    OrderEntityRepository orderEntityRepository;
+    private AddressService addressService;
     @Autowired
-    EntityManager entityManager;
+    private OrderEntityRepository orderEntityRepository;
+    @Autowired
+    private EntityManager entityManager;
+    @Autowired
+    private CatalogItemService catalogItemService;
 
     @Override
     public Order createOrder(Order order) {
@@ -51,12 +50,12 @@ public class OrderServiceImpl implements OrderService {
         Cart cart = cartItemService.doCheckout(userContextService.getUserId());
         order.setTotalAmount(cart.getTotal());
 
-        List<Address> addressList = addressService.findUserAddress(userContextService.getUserId());
+        Address addressForShipping = addressService.findById(order.getAddressId());
         ObjectMapper objectMapper = new ObjectMapper();
 
-        if (addressList != null) {
+        if (addressForShipping != null) {
             try {
-                String jsonAddress = objectMapper.writeValueAsString(addressList.get(0));
+                String jsonAddress = objectMapper.writeValueAsString(addressForShipping);
                 order.setShippingAddress(jsonAddress);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -65,6 +64,33 @@ public class OrderServiceImpl implements OrderService {
 
         OrderEntity orderEntity = order.toEntity();
         orderEntity = orderEntityRepository.save(orderEntity);
+
+//        if (orderEntity != null && orderEntity.getCustomerId() == userContextService.getUserId()) {
+//
+//            List<CartItem> cartItems = cart.getItems();
+//            for (CartItem cartITEM : cartItems
+//            ) {
+//                int quantityTobeReduced =  cartITEM.getQuantity();
+//                long id = cartITEM.getCartId();
+//
+//                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//                CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
+//                Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
+//                criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("id"), id));
+//                List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery).getResultList();
+//                CartItemEntity cartItemEntity = resultList.get(0);
+//
+//                //  CartItemEntity cartItemEntity = entityManager.find(CartItemEntity.class, id);
+//                long catalogItemId = cartItemEntity.getCatalogItemId();
+//                CatalogItem catalogItem = catalogItemService.findById(catalogItemId);
+//                catalogItem.setStockQuantity(catalogItem.getStockQuantity()-quantityTobeReduced);
+//                CatalogItemEntity catalogItemEntity = catalogItem.toEntity();
+//                catalogItemEntity = catalogItemEntityRepository.save(catalogItemEntity);
+//            }
+//
+//
+//        } else throw new AppRuntimeException("The order is not placed correctly");
+
         return order.fromEntity(orderEntity);
     }
 
@@ -78,6 +104,7 @@ public class OrderServiceImpl implements OrderService {
             OrderEntity orderEntity = optionalOrderEntity.get();
             order.setOrderId(orderEntity.getOrderId());
             order.setCustomerId(orderEntity.getCustomerId());
+            order.setAddressId(orderEntity.getAddressId());
             order.setOrderTime(orderEntity.getOrderTime());
             order.setTotalAmount(orderEntity.getTotalAmount());
             order.setShippingAddress(orderEntity.getShippingAddress());
