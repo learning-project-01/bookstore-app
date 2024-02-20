@@ -23,11 +23,13 @@ public class CartItem extends CatalogItem {
     super.setId(catalogItem.getId());
     super.setName(catalogItem.getName());
     super.setPrice(catalogItem.getPrice());
+    super.setStockQuantity(catalogItem.getStockQuantity());
     this.setCartId(cartItemEntity.getCartId());
     this.setCartItemState(CartItemState.mapWeighToState(cartItemEntity.getState()));
     this.setQuantity(cartItemEntity.getQuantity());
     this.setUnitPrice(catalogItem.getPrice());
     this.setTotal(this.getUnitPrice() * this.getQuantity());
+
     return this;
   }
 }

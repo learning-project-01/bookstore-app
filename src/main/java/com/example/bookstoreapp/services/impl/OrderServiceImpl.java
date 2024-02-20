@@ -5,10 +5,10 @@ import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.models.Cart;
 import com.example.bookstoreapp.models.Order;
-import com.example.bookstoreapp.repositories.CatalogItemEntityRepository;
 import com.example.bookstoreapp.repositories.OrderEntityRepository;
 import com.example.bookstoreapp.services.*;
 import com.example.bookstoreapp.utils.IdGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -26,8 +26,6 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
-    CatalogItemEntityRepository catalogItemEntityRepository;
-    @Autowired
     private UserContextService userContextService;
     @Autowired
     private CartItemService cartItemService;
@@ -42,55 +40,36 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(Order order) {
-        order.setOrderId(IdGenerator.getLongId());
-        order.setCustomerId(userContextService.getUserId());
-        LocalDateTime localDateTime = LocalDateTime.now();
-        order.setOrderTime(localDateTime);
-
         Cart cart = cartItemService.doCheckout(userContextService.getUserId());
-        order.setTotalAmount(cart.getTotal());
+        LocalDateTime localDateTime = LocalDateTime.now();
 
         Address addressForShipping = addressService.findById(order.getAddressId());
         ObjectMapper objectMapper = new ObjectMapper();
+        String jsonAddress;
+        if (addressForShipping == null) throw new AppRuntimeException("No address exists for the user");
+        try {
+            jsonAddress = objectMapper.writeValueAsString(addressForShipping);
+        } catch (JsonProcessingException e) {
+            throw new AppRuntimeException(e.getMessage());
+        }
 
-        if (addressForShipping != null) {
-            try {
-                String jsonAddress = objectMapper.writeValueAsString(addressForShipping);
-                order.setShippingAddress(jsonAddress);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } else throw new AppRuntimeException("No address exists for the user");
+        order.setOrderId(IdGenerator.getLongId());
+        order.setCustomerId(userContextService.getUserId());
+        order.setOrderTime(localDateTime);
+        order.setTotalAmount(cart.getTotal());
+        order.setShippingAddress(jsonAddress);
+
+        cart.getItems().forEach(cartItem -> {
+            int purchaseQuantity = cartItem.getQuantity();
+            int stockQuantity = cartItem.getStockQuantity() - purchaseQuantity;
+            if (purchaseQuantity > stockQuantity)
+                throw new AppRuntimeException("Not enough stock available for this order");
+            cartItem.setStockQuantity(stockQuantity);
+            catalogItemService.update(cartItem.getId(), cartItem);
+        });
 
         OrderEntity orderEntity = order.toEntity();
         orderEntity = orderEntityRepository.save(orderEntity);
-
-//        if (orderEntity != null && orderEntity.getCustomerId() == userContextService.getUserId()) {
-//
-//            List<CartItem> cartItems = cart.getItems();
-//            for (CartItem cartITEM : cartItems
-//            ) {
-//                int quantityTobeReduced =  cartITEM.getQuantity();
-//                long id = cartITEM.getCartId();
-//
-//                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//                CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
-//                Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
-//                criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("id"), id));
-//                List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery).getResultList();
-//                CartItemEntity cartItemEntity = resultList.get(0);
-//
-//                //  CartItemEntity cartItemEntity = entityManager.find(CartItemEntity.class, id);
-//                long catalogItemId = cartItemEntity.getCatalogItemId();
-//                CatalogItem catalogItem = catalogItemService.findById(catalogItemId);
-//                catalogItem.setStockQuantity(catalogItem.getStockQuantity()-quantityTobeReduced);
-//                CatalogItemEntity catalogItemEntity = catalogItem.toEntity();
-//                catalogItemEntity = catalogItemEntityRepository.save(catalogItemEntity);
-//            }
-//
-//
-//        } else throw new AppRuntimeException("The order is not placed correctly");
-
         return order.fromEntity(orderEntity);
     }
 
@@ -132,5 +111,4 @@ public class OrderServiceImpl implements OrderService {
 
         return orders;
     }
-
 }
