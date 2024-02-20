@@ -42,11 +42,10 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(Order order) {
         Cart cart = cartItemService.doCheckout(userContextService.getUserId());
         LocalDateTime localDateTime = LocalDateTime.now();
+        Address addressForShipping = checkAddressOfOrder(addressService.findUserAddress(userContextService.getUserId()), order.getAddressId());
 
-        Address addressForShipping = addressService.findById(order.getAddressId());
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonAddress;
-        if (addressForShipping == null) throw new AppRuntimeException("No address exists for the user");
         try {
             jsonAddress = objectMapper.writeValueAsString(addressForShipping);
         } catch (JsonProcessingException e) {
@@ -61,16 +60,25 @@ public class OrderServiceImpl implements OrderService {
 
         cart.getItems().forEach(cartItem -> {
             int purchaseQuantity = cartItem.getQuantity();
-            int stockQuantity = cartItem.getStockQuantity() - purchaseQuantity;
+            int stockQuantity = cartItem.getStockQuantity();
+            int newStockQuantity = cartItem.getStockQuantity() - purchaseQuantity;
             if (purchaseQuantity > stockQuantity)
                 throw new AppRuntimeException("Not enough stock available for this order");
-            cartItem.setStockQuantity(stockQuantity);
+            cartItem.setStockQuantity(newStockQuantity);
             catalogItemService.update(cartItem.getId(), cartItem);
         });
 
         OrderEntity orderEntity = order.toEntity();
         orderEntity = orderEntityRepository.save(orderEntity);
         return order.fromEntity(orderEntity);
+    }
+
+    private Address checkAddressOfOrder(List<Address> addressList, long addId) {
+        return addressList.stream()
+                .filter(address -> address.getId() == addId)
+                .findFirst()
+                .orElseThrow(() -> new AppRuntimeException("The provided address doesn't exist for the user"));
+
     }
 
     @Override
