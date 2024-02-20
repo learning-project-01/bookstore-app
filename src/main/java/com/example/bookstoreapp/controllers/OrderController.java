@@ -10,7 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 public class OrderController {
-
     @Autowired
     OrderService orderService;
 
@@ -18,10 +17,6 @@ public class OrderController {
     public Order crateOrder(@RequestBody Order order) {
         return orderService.createOrder(order);
     }
-//    @GetMapping
-//    public Order crateOrder(Order order) {
-//        return orderService.createOrder(order);
-//    }
 
     @GetMapping("/{orderId}")
     public Order orderSummary(@PathVariable("orderId") long orderId) {
@@ -32,5 +27,4 @@ public class OrderController {
     public List<Order> allOrders(@PathVariable("customerId") long customerId) {
         return orderService.allOrders(customerId);
     }
-
 }
