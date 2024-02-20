@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     public Order createOrder(Order order) {
         order.setOrderId(IdGenerator.getLongId());
         LocalDate localDate=LocalDate.now();
-        order.setOrderdate(localDate);
+        order.setOrderDate(localDate);
         order.setDeliveryDate(localDate.plusDays(5));
         order.setUserId(userContextService.getUserId());
         Cart cart = cartItemService.doCheckout(userContextService.getUserId());
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
         if (addressList != null) {
             try {
                 String jsonAddress = objectMapper.writeValueAsString(addressList.get(0));
-                order.setAddressId(Integer.valueOf(jsonAddress));
+                order.setShippingAddress(jsonAddress);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

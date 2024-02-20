@@ -1,0 +1,1 @@
+ALTER TABLE address ADD COLUMN address_type INT(30);
