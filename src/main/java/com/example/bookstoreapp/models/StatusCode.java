@@ -29,7 +29,7 @@ public enum StatusCode {
 
   private static final Map<Integer, StatusCode> valueVsStatusCode = new HashMap<>();
 
-  public StatusCode toStatusCode(int value){
+  public static StatusCode toStatusCode(int value){
     if(valueVsStatusCode.isEmpty()){
       for(StatusCode statusCode: StatusCode.values()){
         valueVsStatusCode.put(statusCode.value, statusCode);
