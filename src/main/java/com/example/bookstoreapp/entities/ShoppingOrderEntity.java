@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "shopping_order")
@@ -18,6 +17,5 @@ public class ShoppingOrderEntity {
   private Float totalAmount;
   private int totalItemCount;
   private Date orderDate;
-  private List<OrderItem> orderItems;
   private String address;
 }
