@@ -1,5 +1,7 @@
 package com.example.bookstoreapp.services.impl;
 
+import com.example.bookstoreapp.entities.OrderItemEntity;
+import com.example.bookstoreapp.entities.ShoppingOrderEntity;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Address;
 import com.example.bookstoreapp.models.Cart;
@@ -7,6 +9,8 @@ import com.example.bookstoreapp.models.CartItem;
 import com.example.bookstoreapp.models.OrderItem;
 import com.example.bookstoreapp.models.ShoppingOrder;
 import com.example.bookstoreapp.models.OrderRequest;
+import com.example.bookstoreapp.repositories.OrderItemEntityRepository;
+import com.example.bookstoreapp.repositories.ShoppingOrderEntityRepository;
 import com.example.bookstoreapp.services.AddressService;
 import com.example.bookstoreapp.services.CartItemService;
 import com.example.bookstoreapp.services.OrderService;
@@ -30,6 +34,12 @@ public class OrderServiceImpl implements OrderService {
 
   @Autowired
   private UserContextService userContextService;
+
+  @Autowired
+  private ShoppingOrderEntityRepository shoppingOrderEntityRepository;
+
+  @Autowired
+  private OrderItemEntityRepository orderItemEntityRepository;
 
   @Override
   public ShoppingOrder createOrder(OrderRequest orderRequest) {
@@ -71,6 +81,13 @@ public class OrderServiceImpl implements OrderService {
     // 6. db operation to reduce items in catalog
 
     // 7. db operation to save shopping order and its item
+    ShoppingOrderEntity entity = shoppingOrderEntityRepository.save(shoppingOrder.toEntity());
+    List<OrderItemEntity> orderItemEntities = shoppingOrder
+        .getOrderItems()
+        .stream()
+        .map(e-> e.toEntity(entity.getId()))
+        .toList();
+    orderItemEntityRepository.saveAll(orderItemEntities);
     return shoppingOrder;
 
   }
