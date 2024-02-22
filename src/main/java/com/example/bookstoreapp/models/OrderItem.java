@@ -23,13 +23,13 @@ public class OrderItem {
     OrderItemEntity entity = new OrderItemEntity();
     entity.setId(IdGenerator.getLongId());
     entity.setOrderId(orderId);
-    entity.setCatalogItemId(getId());
+    entity.setCatalogItemId(getCatalogItemId());
     entity.setCartId(getCartId());
     entity.setQuantity(getQuantity());
     entity.setUnitPrice(getUnitPrice());
     entity.setTotal(getTotal());
-    entity.setPurchasedOn(new Date());
-    entity.setStatusCode(StatusCode.ORDER_PLACED.getValue());
+    entity.setPurchasedOn(getPurchasedOn());
+    entity.setStatusCode(getStatusCode().getValue());
     return entity;
   }
 

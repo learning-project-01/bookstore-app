@@ -9,6 +9,7 @@ import com.example.bookstoreapp.models.CartItem;
 import com.example.bookstoreapp.models.OrderItem;
 import com.example.bookstoreapp.models.ShoppingOrder;
 import com.example.bookstoreapp.models.OrderRequest;
+import com.example.bookstoreapp.models.StatusCode;
 import com.example.bookstoreapp.repositories.OrderItemEntityRepository;
 import com.example.bookstoreapp.repositories.ShoppingOrderEntityRepository;
 import com.example.bookstoreapp.services.AddressService;
@@ -17,13 +18,15 @@ import com.example.bookstoreapp.services.OrderService;
 import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.AppUtils;
 import com.example.bookstoreapp.utils.IdGenerator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
   @Autowired
@@ -46,6 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     ShoppingOrder shoppingOrder = new ShoppingOrder();
     shoppingOrder.setId(IdGenerator.getLongId());
+    shoppingOrder.setOrderDate(new Date());
 
     // 1. do checkout
     Cart cart = cartItemService.doCheckout(userContextService.getUserId());
@@ -85,15 +89,36 @@ public class OrderServiceImpl implements OrderService {
     List<OrderItemEntity> orderItemEntities = shoppingOrder
         .getOrderItems()
         .stream()
-        .map(e-> e.toEntity(entity.getId()))
+        .map(e->{
+          e.setOrderId(entity.getId());
+          return e.toEntity(entity.getId());
+        })
         .toList();
     orderItemEntityRepository.saveAll(orderItemEntities);
+
+    log.info("order amount: {} placed: {}, with item count: {} from cart: {}",
+        shoppingOrder.getTotalAmount(),
+        shoppingOrder.getId(),
+        shoppingOrder.getTotalItemCount(),
+        cart.getCartId());
+
     return shoppingOrder;
 
   }
 
   private OrderItem convertToOrderItem(CartItem cartItem){
-    return null; // todo the logic
+    OrderItem orderItem = new OrderItem();
+    orderItem.setId(IdGenerator.getLongId());
+    orderItem.setCatalogItemId(cartItem.getId());
+    orderItem.setUnitPrice(cartItem.getUnitPrice());
+    orderItem.setQuantity(cartItem.getQuantity());
+    orderItem.setTotal(cartItem.getTotal());
+    orderItem.setCatalogItemId(cartItem.getId());
+    orderItem.setCatalogItemId(cartItem.getId());
+    orderItem.setCartId(cartItem.getCartId());
+    orderItem.setPurchasedOn(new Date());
+    orderItem.setStatusCode(StatusCode.ORDER_PLACED);
+    return orderItem;
   }
 
   private Address extractAddress(Long addressId){

@@ -22,7 +22,7 @@ public class ShoppingOrder {
     entity.setId(IdGenerator.getLongId());
     entity.setTotalAmount(this.getTotalAmount());
     entity.setTotalItemCount(this.getTotalItemCount());
-    entity.setOrderDate(new Date());
+    entity.setOrderDate(this.getOrderDate());
     entity.setAddress(this.getAddress());
     return entity;
   }
