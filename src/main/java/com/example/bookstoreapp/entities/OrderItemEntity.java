@@ -21,5 +21,5 @@ public class OrderItemEntity {
   private Float unitPrice;
   private Float total;
   private Date purchasedOn;
-  private StatusCode statusCode;
+  private int statusCode;
 }
