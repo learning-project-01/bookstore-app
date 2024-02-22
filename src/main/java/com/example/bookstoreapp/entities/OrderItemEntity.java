@@ -1,6 +1,5 @@
 package com.example.bookstoreapp.entities;
 
-import com.example.bookstoreapp.models.StatusCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Data;
