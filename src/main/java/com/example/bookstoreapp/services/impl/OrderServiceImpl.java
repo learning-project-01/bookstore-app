@@ -102,8 +102,19 @@ public class OrderServiceImpl implements OrderService {
         shoppingOrder.getTotalItemCount(),
         cart.getCartId());
 
+    writeOrderAsJsonDocument(shoppingOrder);
+
     return shoppingOrder;
 
+  }
+
+  private void writeOrderAsJsonDocument(ShoppingOrder shoppingOrder){
+    String userHome = System.getProperty("user.home");
+    String fileName = shoppingOrder.getId()+".json";
+    String filePath = userHome + "/" +fileName;
+    log.info("writing to file: {} for order: {}", filePath, shoppingOrder.getId());
+    AppUtils.writeToFile(filePath, shoppingOrder);
+    log.info("written to file: {} for order: {}", filePath, shoppingOrder.getId());
   }
 
   private OrderItem convertToOrderItem(CartItem cartItem){

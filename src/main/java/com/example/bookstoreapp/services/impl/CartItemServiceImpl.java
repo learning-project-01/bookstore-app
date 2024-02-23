@@ -131,6 +131,10 @@ public class CartItemServiceImpl implements CartItemService {
 
   @Override
   public Cart doCheckout(Long cartId) {
-    return getCartSummary(cartId, CartItemState.BUY_NOW);
+    Cart cart = getCartSummary(cartId, CartItemState.BUY_NOW);
+    if(cart.getItems().isEmpty()){
+      throw new AppRuntimeException("none of the item in cart is for BUY_NOW");
+    }
+    return cart;
   }
 }

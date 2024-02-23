@@ -5,6 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.util.AntPathMatcher;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -33,5 +35,15 @@ public class AppUtils {
       throw new RuntimeException(e);
     }
     return result;
+  }
+
+  public static void writeToFile(String filepath, Object object){
+    try {
+      MAPPER
+          .writerWithDefaultPrettyPrinter()
+          .writeValue(new File(filepath), object);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
