@@ -133,5 +133,31 @@ public class CartItemServiceImpl implements CartItemService {
   public Cart doCheckout(Long cartId) {
     return getCartSummary(cartId, CartItemState.BUY_NOW);
   }
+  public List<CartItemEntity> deleteOrders(CartItemState cartItemState) {
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
+    Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
+
+    List<Predicate> predicateList = new ArrayList<>();
+    // Adding a predicate to the query to filter by cartId
+    Predicate cartIdPredicate = criteriaBuilder.equal(root.get("cartId"), userContextService.getUserId());
+    predicateList.add(cartIdPredicate);
+
+    if (cartItemState != null) {
+      Predicate statePredicate = criteriaBuilder.equal(root.get("state"), cartItemState);
+      predicateList.add(statePredicate);
+    }
+
+    criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+
+    List<CartItemEntity> cartItemsToDelete = entityManager.createQuery(criteriaQuery).getResultList();
+
+    for (CartItemEntity cartItemEntity : cartItemsToDelete) {
+      entityManager.remove(cartItemEntity);
+    }
+
+    return cartItemsToDelete;
+  }
+
 
 }

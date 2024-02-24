@@ -1,5 +1,6 @@
 package com.example.bookstoreapp.services.impl;
 
+import com.example.bookstoreapp.entities.CartItemEntity;
 import com.example.bookstoreapp.entities.OrderItemEntity;
 import com.example.bookstoreapp.entities.ShoppingOrderEntity;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.bookstoreapp.models.CartItemState.BUY_NOW;
+
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
@@ -27,6 +31,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private CartItemService cartItemService;
+    @Autowired
+    private CartItemServiceImpl cartItemServiceImpl;
 
     @Autowired
     private UserContextService userContextService;
@@ -75,6 +81,8 @@ public class OrderServiceImpl implements OrderService {
                 shoppingOrder.getId(),
                 shoppingOrder.getTotalItemCount(),
                 cart.getCartId());
+        // Delete cart items associated with the order
+        List<CartItemEntity> deletedCartItems =cartItemServiceImpl.deleteOrders(BUY_NOW);
 
         return shoppingOrder;
     }
@@ -103,12 +111,6 @@ public class OrderServiceImpl implements OrderService {
                 .findFirst()
                 .orElseThrow(() -> new AppRuntimeException("Address not found"));
         return address;
-        // Delete cart items associated with the order
-        List<CartItem> cartItems=deleteCartItems(cartItemService.doCheckout(userContextService.getUserId()));
-    }
-    private void deleteCartItems(List<CartItem> cartItems) {
-        for (CartItem cartItem : cartItems) {
-            CartItemEntityRepository.delete(cartItem);
-        }
+
     }
 }
