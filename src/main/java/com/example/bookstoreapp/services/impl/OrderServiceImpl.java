@@ -14,16 +14,23 @@ import com.example.bookstoreapp.repositories.OrderItemEntityRepository;
 import com.example.bookstoreapp.repositories.ShoppingOrderEntityRepository;
 import com.example.bookstoreapp.services.AddressService;
 import com.example.bookstoreapp.services.CartItemService;
+import com.example.bookstoreapp.services.CatalogItemService;
 import com.example.bookstoreapp.services.OrderService;
 import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.AppUtils;
 import com.example.bookstoreapp.utils.IdGenerator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -36,6 +43,9 @@ public class OrderServiceImpl implements OrderService {
   private CartItemService cartItemService;
 
   @Autowired
+  private CatalogItemService catalogItemService;
+
+  @Autowired
   private UserContextService userContextService;
 
   @Autowired
@@ -44,7 +54,11 @@ public class OrderServiceImpl implements OrderService {
   @Autowired
   private OrderItemEntityRepository orderItemEntityRepository;
 
+  @Autowired
+  private EntityManager em;
+
   @Override
+  @Transactional
   public ShoppingOrder createOrder(OrderRequest orderRequest) {
 
     ShoppingOrder shoppingOrder = new ShoppingOrder();
@@ -82,14 +96,15 @@ public class OrderServiceImpl implements OrderService {
     String addressStr = AppUtils.toString(address);
     shoppingOrder.setAddress(addressStr);
 
-    // 6. db operation to reduce items in catalog
+    // 6. db operation to save shopping order and its item
 
-    // 7. db operation to save shopping order and its item
+    final Map<Long, Integer> itemPurchaseCount = new HashMap<>();
     ShoppingOrderEntity entity = shoppingOrderEntityRepository.save(shoppingOrder.toEntity());
     List<OrderItemEntity> orderItemEntities = shoppingOrder
         .getOrderItems()
         .stream()
         .map(e->{
+          itemPurchaseCount.put(e.getCatalogItemId(), e.getQuantity());
           e.setOrderId(entity.getId());
           return e.toEntity(entity.getId());
         })
@@ -101,6 +116,9 @@ public class OrderServiceImpl implements OrderService {
         shoppingOrder.getId(),
         shoppingOrder.getTotalItemCount(),
         cart.getCartId());
+
+    cartItemService.clearCartPostOrder();
+    catalogItemService.reduceStockCount(itemPurchaseCount);
 
     writeOrderAsJsonDocument(shoppingOrder);
 
@@ -114,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
     String filePath = userHome + "/" +fileName;
     log.info("writing to file: {} for order: {}", filePath, shoppingOrder.getId());
     AppUtils.writeToFile(filePath, shoppingOrder);
-    log.info("written to file: {} for order: {}", filePath, shoppingOrder.getId());
+    log.info("[ written ] to file: {} for order: {}", filePath, shoppingOrder.getId());
   }
 
   private OrderItem convertToOrderItem(CartItem cartItem){

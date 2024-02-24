@@ -12,17 +12,23 @@ import com.example.bookstoreapp.services.CatalogItemService;
 import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.IdGenerator;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
+@Slf4j
 public class CartItemServiceImpl implements CartItemService {
 
   @Autowired
@@ -136,5 +142,29 @@ public class CartItemServiceImpl implements CartItemService {
       throw new AppRuntimeException("none of the item in cart is for BUY_NOW");
     }
     return cart;
+  }
+
+  @Override
+  public int clearCartPostOrder() {
+
+    int state = CartItemState.BUY_NOW.getWeight();
+    Long cartId = userContextService.getUserId();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaDelete<CartItemEntity> deleteQuery = criteriaBuilder.createCriteriaDelete(CartItemEntity.class);
+    Root<CartItemEntity> root = deleteQuery.from(CartItemEntity.class);
+
+    // Define delete condition
+    Predicate condition1 = criteriaBuilder.equal(root.get("cartId"), cartId);
+    Predicate condition2 = criteriaBuilder.equal(root.get("state"), state);
+    deleteQuery.where(criteriaBuilder.and(condition1, condition2));// this is AND operator with Criteria
+
+    // DELETE FROM TBL_NAME WHERE CART_ID=? AND STATE=?
+    // Execute delete query
+    int deletedRowCount = entityManager.createQuery(deleteQuery).executeUpdate();
+
+    log.info("clear items from cart: {} with state: {}", cartId, state);
+
+    return deletedRowCount;
   }
 }

@@ -3,6 +3,7 @@ package com.example.bookstoreapp.services;
 import com.example.bookstoreapp.models.CatalogItem;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CatalogItemService {
   CatalogItem create(CatalogItem catalogItem);
@@ -11,4 +12,6 @@ public interface CatalogItemService {
   CatalogItem findById(Long catalogItemId);
 
   List<CatalogItem> list();
+
+  int reduceStockCount(Map<Long, Integer> purchasedItemCount);
 }
