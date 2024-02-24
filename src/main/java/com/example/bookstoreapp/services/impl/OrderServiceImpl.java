@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
                 shoppingOrder.getTotalItemCount(),
                 cart.getCartId());
         // Delete cart items associated with the order
-        List<CartItemEntity> deletedCartItems =cartItemServiceImpl.deleteOrders(BUY_NOW);
+        List<CartItemEntity> deletedCartItems =cartItemServiceImpl.deleteOrders(CartItemState.mapWeighToState(2));
 
         return shoppingOrder;
     }

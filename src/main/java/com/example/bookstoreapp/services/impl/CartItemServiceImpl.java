@@ -18,6 +18,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +134,7 @@ public class CartItemServiceImpl implements CartItemService {
   public Cart doCheckout(Long cartId) {
     return getCartSummary(cartId, CartItemState.BUY_NOW);
   }
+  @Transactional
   public List<CartItemEntity> deleteOrders(CartItemState cartItemState) {
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
@@ -144,7 +146,7 @@ public class CartItemServiceImpl implements CartItemService {
     predicateList.add(cartIdPredicate);
 
     if (cartItemState != null) {
-      Predicate statePredicate = criteriaBuilder.equal(root.get("state"), cartItemState);
+      Predicate statePredicate = criteriaBuilder.equal(root.get("state"), cartItemState.getWeight());
       predicateList.add(statePredicate);
     }
 
