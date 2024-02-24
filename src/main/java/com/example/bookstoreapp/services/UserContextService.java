@@ -4,6 +4,7 @@ import com.example.bookstoreapp.models.User;
 
 public interface UserContextService {
 
+
   Long getUserId();
 
   void setUser(User user);

@@ -1,10 +1,8 @@
 package com.example.bookstoreapp.services;
 
-import com.example.bookstoreapp.models.Order;
+import com.example.bookstoreapp.models.OrderRequest;
+import com.example.bookstoreapp.models.ShoppingOrder;
 
 public interface OrderService {
-    public Order createOrder(Order order);
-    public Order orderSummary(Long orderId);
-
-
+    public ShoppingOrder createOrder(OrderRequest orderRequest);
 }
