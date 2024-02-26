@@ -9,4 +9,7 @@ public interface CartItemService {
   Cart getCartSummary(Long cartId);
 
   Cart doCheckout(Long cartId);
+
+  int clearCartPostOrder();
+
 }

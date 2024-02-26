@@ -8,7 +8,6 @@ import lombok.Data;
 public class CartItem extends CatalogItem {
 
   private Long cartId;
-
   private int quantity;
   private Float total;
   private Float unitPrice;
