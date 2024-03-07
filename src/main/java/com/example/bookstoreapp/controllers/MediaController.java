@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/media")
 public class MediaController {
     @Autowired
-    MediaService mediaService;
+    private MediaService mediaService;
 
     @GetMapping
     public List<Media> allMedia() {
@@ -22,6 +22,9 @@ public class MediaController {
     public Media mediaById(@PathVariable Long id) {
         return mediaService.findById(id);
     }
+
+    @GetMapping("/item/{itemId}")
+    public Media itemMedias (@PathVariable long itemId){return mediaService.itemMedias(itemId);}
 
     @PostMapping
     public Media createMedia(@RequestBody Media media) {

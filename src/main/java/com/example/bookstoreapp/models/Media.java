@@ -4,6 +4,8 @@ import com.example.bookstoreapp.entities.MediaEntity;
 import com.example.bookstoreapp.utils.IdGenerator;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Media {
     private Long id;
@@ -12,6 +14,7 @@ public class Media {
     private boolean thumbnail;
     private Long sequenceId;
     private Long itemId;
+    private List<Media> itemMedias;
 
     public MediaEntity toEntity() {
         MediaEntity entity = new MediaEntity();
@@ -19,7 +22,7 @@ public class Media {
         entity.setMediaType(this.getMediaType().getValue());
         entity.setMediaUrl(this.getMediaUrl());
         entity.setThumbnail(this.isThumbnail());
-        entity.setSequenceId(IdGenerator.getLongId());
+        entity.setSequenceId(this.getSequenceId());
         entity.setItemId(this.getItemId());
         return entity;
     }

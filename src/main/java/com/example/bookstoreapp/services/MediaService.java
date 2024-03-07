@@ -14,4 +14,6 @@ public interface MediaService {
     Media findById(Long id);
 
     List<Media> allMedia();
+
+    Media itemMedias(Long itemId);
 }

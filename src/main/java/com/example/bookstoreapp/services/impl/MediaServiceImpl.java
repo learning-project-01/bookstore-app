@@ -5,6 +5,10 @@ import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Media;
 import com.example.bookstoreapp.repositories.MediaRepository;
 import com.example.bookstoreapp.services.MediaService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +20,9 @@ import java.util.Optional;
 public class MediaServiceImpl implements MediaService {
 
     @Autowired
-    MediaRepository mediaRepository;
+    private MediaRepository mediaRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     @Override
     public Media addMedia(Media media) {
@@ -70,5 +76,30 @@ public class MediaServiceImpl implements MediaService {
             mediaList.add(media);
         }
         return mediaList;
+    }
+
+    @Override
+    public Media itemMedias(Long itemId) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<MediaEntity> criteriaQuery = criteriaBuilder.createQuery(MediaEntity.class);
+        Root<MediaEntity> root = criteriaQuery.from(MediaEntity.class);
+
+        criteriaQuery.where(criteriaBuilder.equal(root.get("itemId"), itemId));
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("sequenceId")));
+
+        List<MediaEntity> mediaEntityList = entityManager.createQuery(criteriaQuery).getResultList();
+
+        if (mediaEntityList.isEmpty())
+            throw new AppRuntimeException("No such item is present for the itemId " + itemId);
+
+        List<Media> mediaList = mediaEntityList.stream()
+                .map(mediaEntity1 -> new Media().fromEntity(mediaEntity1))
+                .toList();
+
+        Media media = new Media();
+        media.setItemId(itemId);
+        media.setItemMedias(mediaList);
+        return media;
     }
 }
