@@ -45,7 +45,7 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public Media updateMedia(Long id, Media media) {
-        Media sevedMedia = findById(id);
+        Media savedMedia = findById(id);
         MediaEntity mediaEntity = media.toEntity();
         mediaEntity = mediaRepository.save(mediaEntity);
         return new Media().fromEntity(mediaEntity);
