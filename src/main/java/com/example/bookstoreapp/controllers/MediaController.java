@@ -24,7 +24,9 @@ public class MediaController {
     }
 
     @GetMapping("/item/{itemId}")
-    public Media itemMedias (@PathVariable long itemId){return mediaService.itemMedias(itemId);}
+    public Media itemMedias(@PathVariable long itemId) {
+        return mediaService.itemMedias(itemId);
+    }
 
     @PostMapping
     public Media createMedia(@RequestBody Media media) {

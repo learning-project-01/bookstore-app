@@ -93,9 +93,7 @@ public class MediaServiceImpl implements MediaService {
         if (mediaEntityList.isEmpty())
             throw new AppRuntimeException("No such item is present for the itemId " + itemId);
 
-        List<Media> mediaList = mediaEntityList.stream()
-                .map(mediaEntity1 -> new Media().fromEntity(mediaEntity1))
-                .toList();
+        List<Media> mediaList = mediaEntityList.stream().map(mediaEntity1 -> new Media().fromEntity(mediaEntity1)).toList();
 
         Media media = new Media();
         media.setItemId(itemId);
