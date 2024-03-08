@@ -5,7 +5,6 @@ import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Media;
 import com.example.bookstoreapp.repositories.MediaRepository;
 import com.example.bookstoreapp.services.MediaService;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,6 @@ public class MediaServiceImpl implements MediaService {
 
     @Autowired
     private MediaRepository mediaRepository;
-    @Autowired
-    private EntityManager entityManager;
 
     @Override
     public Media addMedia(Media media) {
