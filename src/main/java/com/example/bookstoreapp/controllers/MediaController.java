@@ -23,11 +23,6 @@ public class MediaController {
         return mediaService.findById(id);
     }
 
-    @GetMapping("/item/{itemId}")
-    public Media itemMedias(@PathVariable long itemId) {
-        return mediaService.itemMedias(itemId);
-    }
-
     @PostMapping
     public Media createMedia(@RequestBody Media media) {
         return mediaService.addMedia(media);
