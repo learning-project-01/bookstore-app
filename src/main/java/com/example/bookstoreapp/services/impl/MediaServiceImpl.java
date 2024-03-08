@@ -7,6 +7,8 @@ import com.example.bookstoreapp.services.MediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class MediaServiceImpl implements MediaService {
     @Autowired
@@ -14,22 +16,29 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public Media save(Media media) {
-        MediaEntity mediaEntity=mediaEntityRepository.save(media.toEntity());
+        MediaEntity mediaEntity = mediaEntityRepository.save(media.toEntity());
         return media.fromEntity(mediaEntity);
     }
 
     @Override
     public Media mediaById(Long id) {
-        return null;
+        Optional<MediaEntity> mediaEntity = mediaEntityRepository.findById(id);
+        return new Media().fromEntity(mediaEntity.get());
     }
 
     @Override
     public Media updateMedia(Long id, Media media) {
-        return null;
+        MediaEntity mediaEntity = media.toEntity();
+        mediaEntityRepository.save(mediaEntity);
+        return media.fromEntity(mediaEntity);
     }
 
     @Override
     public Media removeMedia(Long id) {
-        return null;
+        Optional<MediaEntity> mediaEntity = mediaEntityRepository.findById(id);
+        MediaEntity entity = mediaEntity.get();
+        mediaEntityRepository.deleteById(id);
+        return new Media().fromEntity(entity);
+
     }
 }

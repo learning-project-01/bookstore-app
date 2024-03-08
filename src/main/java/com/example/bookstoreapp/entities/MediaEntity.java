@@ -1,6 +1,5 @@
 package com.example.bookstoreapp.entities;
 
-import com.example.bookstoreapp.models.MediaType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -13,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MediaEntity {
     @Id
-   private Long id;
-  private   MediaType mediaType; // IMG, VIDEO
+    private Long id;
+    private int mediaType; // IMG, VIDEO
     private String mediaUrl;
     private boolean thumbNail;
     private Long sequenceId;

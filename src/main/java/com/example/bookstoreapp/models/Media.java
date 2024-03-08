@@ -7,7 +7,7 @@ import lombok.Data;
 public class Media {
 
     private Long id;
-    private MediaType mediaType; // IMG, VIDEO
+    private int mediaType; // IMG, VIDEO
     private String mediaUrl;
     private boolean thumbNail;
     private Long sequenceId;
