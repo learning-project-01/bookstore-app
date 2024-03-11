@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class MediaControllerTest {
     @InjectMocks
-    MediaController mediaController;
+    private MediaController mediaController;
     @Mock
-    MediaService mediaService;
+    private MediaService mediaService;
     @Test
     void save()
     {
