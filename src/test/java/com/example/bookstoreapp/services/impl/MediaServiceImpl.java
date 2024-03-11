@@ -10,10 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
-
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MediaServiceImplTest {
@@ -51,4 +49,44 @@ class MediaServiceImplTest {
         Media retrievedMedia = mediaServiceImpl.mediaById(id);
         assertNotNull(retrievedMedia);
     }
+    @Test
+    public void testRemoveMedia() {
+        Long id = 1L;
+        MediaEntity mediaEntity = new MediaEntity();
+        Optional<MediaEntity> optionalMediaEntity = Optional.of(mediaEntity);
+        when(mediaEntityRepository.findById(id)).thenReturn(optionalMediaEntity);
+        Media removedMedia = mediaServiceImpl.removeMedia(id);
+        assertNotNull(removedMedia);
+        verify(mediaEntityRepository, times(1)).findById(id);
+        verify(mediaEntityRepository, times(1)).deleteById(id);
+    }
+    @Test
+    void updateMedia() {
+        Long id = 1L;
+        Media media = new Media();
+        media.setMediaType(1);
+        media.setMediaUrl("www.googel.com");
+        media.setThumbnail(true);
+        media.setSequenceId(1L);
+        media.setItemId(5L);
+
+        MediaEntity mediaEntity = new MediaEntity();
+        mediaEntity.setId(id);
+        mediaEntity.setMediaType(0);
+        mediaEntity.setMediaUrl("https://google.com/image.jpg");
+        mediaEntity.setThumbnail(true);
+        mediaEntity.setSequenceId(2L);
+        mediaEntity.setItemId(5L);
+
+        when(mediaEntityRepository.findById(id)).thenReturn(Optional.of(mediaEntity));
+        when(mediaEntityRepository.save(Mockito.any(MediaEntity.class))).thenReturn(mediaEntity);
+
+        Media updatedMedia = mediaServiceImpl.updateMedia(id, media);
+
+        assertNotNull(updatedMedia);
+        assertEquals(mediaEntity.getId(), updatedMedia.getId());
+        assertEquals(mediaEntity.getMediaType(), updatedMedia.getMediaType());
+        assertEquals(mediaEntity.getMediaUrl(), updatedMedia.getMediaUrl());
+    }
+
 }
