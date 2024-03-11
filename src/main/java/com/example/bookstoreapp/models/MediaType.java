@@ -1,29 +1,28 @@
 package com.example.bookstoreapp.models;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum MediaType {
-    IMAGE(0), VIDEO(1);
-    private static final Map<Integer, MediaType> weightVsType = new HashMap<>();
-    private final int weight;
+    IMG(0), VID(1);
 
-    MediaType(int weight) {
-        this.weight = weight;
+    private static final Map<Integer, MediaType> valueVsType = new ConcurrentHashMap<>();
+    private final int value;
+
+    MediaType(int value) {
+        this.value = value;
     }
 
-    public static MediaType mapWeighTotype(int weight) {
-        MediaType type = weightVsType.get(weight);
-        if (type != null) {
-            return type;
+    public static MediaType toMediaType(int value) {
+        if (valueVsType.isEmpty()) {
+            for (MediaType mediaType : MediaType.values()) {
+                valueVsType.put(mediaType.value, mediaType);
+            }
         }
-        for (MediaType mediaType : MediaType.values()) {
-            weightVsType.put(mediaType.getWeight(), mediaType);
-        }
-        return weightVsType.get(weight);
+        return valueVsType.get(value);
     }
 
-    public int getWeight() {
-        return weight;
+    public int getValue() {
+        return value;
     }
 }

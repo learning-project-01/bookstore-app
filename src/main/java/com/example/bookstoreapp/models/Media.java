@@ -9,7 +9,7 @@ public class Media {
     private Long id;
     private int mediaType; // IMG, VIDEO
     private String mediaUrl;
-    private boolean thumbNail;
+    private boolean thumbnail;
     private Long sequenceId;
     private Long itemId;
     public MediaEntity toEntity() {
@@ -18,7 +18,7 @@ public class Media {
         entity.setMediaUrl(this.getMediaUrl());
         entity.setMediaType(this.getMediaType());
         entity.setItemId(this.getItemId());
-        entity.setThumbNail(isThumbNail());
+        entity.setThumbnail(isThumbnail());
         entity.setSequenceId(IdGenerator.getLongId());
         return entity;
     }
@@ -28,7 +28,7 @@ public class Media {
         this.setMediaType(entity.getMediaType());
         this.setItemId(entity.getItemId());
         this.setSequenceId(entity.getSequenceId());
-        this.setThumbNail(entity.isThumbNail());
+        this.setThumbnail(entity.isThumbnail());
         return this;
     }
 }

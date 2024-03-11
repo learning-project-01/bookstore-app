@@ -20,7 +20,7 @@ public class MediaController {
     {
         return mediaService.mediaById(id);
     }
-    @PutMapping
+    @PutMapping("/{id}")
     public Media updateMedia(@PathVariable Long id,@RequestBody Media media)
     {
         return mediaService.updateMedia(id,media);

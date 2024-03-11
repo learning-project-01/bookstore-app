@@ -15,7 +15,7 @@ public class MediaEntity {
     private Long id;
     private int mediaType; // IMG, VIDEO
     private String mediaUrl;
-    private boolean thumbNail;
+    private boolean thumbnail;
     private Long sequenceId;
     private Long itemId;
 }
