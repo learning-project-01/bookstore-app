@@ -9,7 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.Optional;
+
+import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MediaServiceImplTest {
@@ -32,10 +36,19 @@ class MediaServiceImplTest {
         mediaEntity.setThumbnail(true);
         mediaEntity.setSequenceId(1L);
         mediaEntity.setItemId(2L);
-        Mockito.when(mediaEntityRepository.save(Mockito.any(MediaEntity.class))).thenReturn(mediaEntity);
+        when(mediaEntityRepository.save(Mockito.any(MediaEntity.class))).thenReturn(mediaEntity);
         Media media1 = mediaServiceImpl.save(media);
         assertNotNull(media1);
         assertEquals(media.getMediaType(), media1.getMediaType());
         assertEquals(media.getMediaUrl(), media1.getMediaUrl());
+    }
+    @Test
+    public void testMediaById() {
+        Long id = 1L;
+        MediaEntity mediaEntity = new MediaEntity();
+        Optional<MediaEntity> optionalMediaEntity = Optional.of(mediaEntity);
+        when(mediaEntityRepository.findById(id)).thenReturn(optionalMediaEntity);
+        Media retrievedMedia = mediaServiceImpl.mediaById(id);
+        assertNotNull(retrievedMedia);
     }
 }

@@ -8,7 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MediaControllerTest {
@@ -26,7 +29,7 @@ public class MediaControllerTest {
         media.setMediaType(1);
         media.setItemId(6L);
 
-        Mockito.when(mediaService.save(Mockito.any(Media.class))).thenReturn(media);
+        when(mediaService.save(Mockito.any(Media.class))).thenReturn(media);
         mediaController.saveMedia(media);
         assertEquals("www.google.com", media.getMediaUrl());
         assertEquals(1L, media.getId());
@@ -39,8 +42,27 @@ public class MediaControllerTest {
     void updateMedia()
     {
         Media media = new Media();
-        Mockito.when(mediaService.updateMedia(1L, media)).thenReturn(media);
+        when(mediaService.updateMedia(1L, media)).thenReturn(media);
         Media updateMedia = mediaController.updateMedia(1L, media);
         assertEquals(updateMedia, media);
     }
+    @Test
+    public void testMediaById() {
+        Long id = 1L;
+        Media media = new Media();
+        when(mediaService.mediaById(id)).thenReturn(media);
+        Media retrievedMedia = mediaController.mediaById(id);
+        assertNotNull(retrievedMedia);
+        assertEquals(retrievedMedia,media);
+    }
+    @Test
+    public void testRemoveMedia() {
+        Long id = 1L;
+        Media media = new Media();
+        when(mediaService.removeMedia(id)).thenReturn(media);
+        Media removedMedia = mediaController.removeMedia(id);
+        assertNotNull(removedMedia);
+        assertEquals(removedMedia,media);
+    }
+
 }
