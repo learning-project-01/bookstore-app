@@ -9,7 +9,7 @@ public class CatalogItemTest {
 
   @Test
   void toEntity() {
-    CatalogItem catalogItem = new CatalogItem(1L, "Book1", 52.69F, 10, 5);
+    CatalogItem catalogItem = new CatalogItem(1L, "Book1", 52.69F, 10);
     CatalogItemEntity catalogItemEntity = catalogItem.toEntity();
 
     assertEquals(catalogItem.getName(), catalogItemEntity.getName());
@@ -19,7 +19,7 @@ public class CatalogItemTest {
 
   @Test
   void fromEntity() {
-    CatalogItemEntity catalogItemEntity = new CatalogItemEntity(1L, "Book1", 52.69F, 20, 5);
+    CatalogItemEntity catalogItemEntity = new CatalogItemEntity(1L, "Book1", 52.69F, 20);
     CatalogItem catalogItem = new CatalogItem().fromEntity(catalogItemEntity);
 
     assertEquals(catalogItem.getName(), catalogItemEntity.getName());

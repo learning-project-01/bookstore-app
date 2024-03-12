@@ -21,13 +21,10 @@ public class CatalogItemEntity {
 
   private Integer stockQuantity;
 
-  private Integer itemLimit;
-
-  public CatalogItemEntity(Long id, String name, Float price, Integer stockQuantity, Integer itemLimit) {
+  public CatalogItemEntity(Long id, String name, Float price, Integer stockQuantity) {
     this.id = id;
     this.name = name;
     this.price = price;
     this.stockQuantity = stockQuantity;
-    this.itemLimit = itemLimit;
   }
 }
