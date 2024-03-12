@@ -14,11 +14,9 @@ public class CatalogItem {
     private String name;
     private Float price;
     private Integer stockQuantity;
-    private Integer itemLimit;
 
     public CatalogItemEntity toEntity() {
-        Integer itemLimits = (this.getItemLimit() == null) ? 0 : this.getItemLimit();
-        return new CatalogItemEntity(this.getId(), this.getName(), this.getPrice(), this.getStockQuantity(), itemLimits);
+        return new CatalogItemEntity(this.getId(), this.getName(), this.getPrice(), this.getStockQuantity());
     }
 
     public CatalogItem fromEntity(CatalogItemEntity entity) {
@@ -26,7 +24,6 @@ public class CatalogItem {
         this.setName(entity.getName());
         this.setPrice(entity.getPrice());
         this.setStockQuantity(entity.getStockQuantity());
-        this.setItemLimit(entity.getItemLimit());
         return this;
     }
 }

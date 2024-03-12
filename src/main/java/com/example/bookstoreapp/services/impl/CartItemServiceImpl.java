@@ -12,7 +12,11 @@ import com.example.bookstoreapp.services.CatalogItemService;
 import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.IdGenerator;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,26 +59,9 @@ public class CartItemServiceImpl implements CartItemService {
 
             return new CartItem().fromEntity(newCartItemEntity, catalogItem);
         }
-
-        /* An item can have two states : One in which it has a limit & the other in which it has no limit
-        if item doesn't have any limit = In database (item_limit = 0)
-        if item has limit = In database item_limit is set to the limit count
-         */
-        // When there is no item limit
-        if (catalogItem.getItemLimit() == 0) {
-            // increase the quantity
-            savedCartItemEntity.setQuantity(savedCartItemEntity.getQuantity() + 1);
-            savedCartItemEntity = cartItemEntityRepository.save(savedCartItemEntity);
-        }
-        // When there is a specific item limit present
-        if (catalogItem.getItemLimit() != 0) {
-            if (savedCartItemEntity.getQuantity() >= catalogItem.getItemLimit())
-                throw new AppRuntimeException("You have reached the maximum limit for this item");
-
-            // increase the quantity
-            savedCartItemEntity.setQuantity(savedCartItemEntity.getQuantity() + 1);
-            savedCartItemEntity = cartItemEntityRepository.save(savedCartItemEntity);
-        }
+        // increase the quantity
+        savedCartItemEntity.setQuantity(savedCartItemEntity.getQuantity() + 1);
+        savedCartItemEntity = cartItemEntityRepository.save(savedCartItemEntity);
 
         return new CartItem().fromEntity(savedCartItemEntity, catalogItem);
     }
@@ -90,7 +77,9 @@ public class CartItemServiceImpl implements CartItemService {
         Predicate predicate2 = criteriaBuilder.equal(root.get("cartId"), userContextService.getUserId());
         criteriaQuery.where(predicate1, predicate2);
 
-        List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery).setMaxResults(1).getResultList();
+        List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery)
+                .setMaxResults(1)
+                .getResultList();
 
         return resultList.isEmpty() ? null : resultList.get(0);
     }
@@ -131,7 +120,10 @@ public class CartItemServiceImpl implements CartItemService {
             cartItems.add(new CartItem().fromEntity(entity, catalogItem));
         }
 
-        Double buyItemsTotalPrice = cartItems.stream().filter(e -> e.getCartItemState() == CartItemState.BUY_NOW).mapToDouble(CartItem::getTotal).sum();
+        Double buyItemsTotalPrice = cartItems.stream()
+                .filter(e -> e.getCartItemState() == CartItemState.BUY_NOW)
+                .mapToDouble(CartItem::getTotal)
+                .sum();
 
         Cart cart = new Cart();
         cart.setCartId(cartId);
