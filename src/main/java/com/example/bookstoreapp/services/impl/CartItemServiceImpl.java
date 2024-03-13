@@ -73,7 +73,6 @@ public class CartItemServiceImpl implements CartItemService {
         savedCartItemEntity.setQuantity(savedCartItemEntity.getQuantity() + 1);
         savedCartItemEntity = cartItemEntityRepository.save(savedCartItemEntity);
 
-
         return new CartItem().fromEntity(savedCartItemEntity, catalogItem);
     }
 
@@ -88,7 +87,9 @@ public class CartItemServiceImpl implements CartItemService {
         Predicate predicate2 = criteriaBuilder.equal(root.get("cartId"), userContextService.getUserId());
         criteriaQuery.where(predicate1, predicate2);
 
-        List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery).setMaxResults(1).getResultList();
+        List<CartItemEntity> resultList = entityManager.createQuery(criteriaQuery)
+                .setMaxResults(1)
+                .getResultList();
 
         return resultList.isEmpty() ? null : resultList.get(0);
     }
@@ -129,7 +130,10 @@ public class CartItemServiceImpl implements CartItemService {
             cartItems.add(new CartItem().fromEntity(entity, catalogItem));
         }
 
-        Double buyItemsTotalPrice = cartItems.stream().filter(e -> e.getCartItemState() == CartItemState.BUY_NOW).mapToDouble(CartItem::getTotal).sum();
+        Double buyItemsTotalPrice = cartItems.stream()
+                .filter(e -> e.getCartItemState() == CartItemState.BUY_NOW)
+                .mapToDouble(CartItem::getTotal)
+                .sum();
 
         Cart cart = new Cart();
         cart.setCartId(cartId);

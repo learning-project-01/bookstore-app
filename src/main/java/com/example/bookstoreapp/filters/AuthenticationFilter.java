@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter implements Filter {
 
-  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**", "/user/login", "/user/signup", "/health"};
+  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**", "/user/login", "/user/signup", "/health","/swagger-ui/**"};
 
   public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
 
