@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CatalogItemEntity {
 
-  @Id
-  private Long id;
+    @Id
+    private Long id;
 
-  private String name;
+    private String name;
 
-  private Float price;
+    private Float price;
 
-  private Integer stockQuantity;
+    private Integer stockQuantity;
 
-  public CatalogItemEntity(Long id, String name, Float price, Integer stockQuantity) {
-    this.id = id;
-    this.name = name;
-    this.price = price;
-    this.stockQuantity = stockQuantity;
-  }
+    public CatalogItemEntity(Long id, String name, Float price, Integer stockQuantity) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
 }
