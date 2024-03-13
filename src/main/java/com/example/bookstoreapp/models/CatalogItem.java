@@ -17,8 +17,8 @@ public class CatalogItem {
   private Integer itemLimit;
 
   public CatalogItemEntity toEntity() {
-    Integer itemLimits = (this.getItemLimit() == null) ? 0 : this.getItemLimit();
-    return new CatalogItemEntity(this.getId(), this.getName(), this.getPrice(), this.getStockQuantity(), itemLimits);
+    Integer itemLimit = (this.getItemLimit() == null) ? 0 : this.getItemLimit();
+    return new CatalogItemEntity(this.getId(), this.getName(), this.getPrice(), this.getStockQuantity(), itemLimit);
   }
 
   public CatalogItem fromEntity(CatalogItemEntity entity) {
