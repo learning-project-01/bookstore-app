@@ -59,6 +59,16 @@ public class CartItemServiceImpl implements CartItemService {
 
             return new CartItem().fromEntity(newCartItemEntity, catalogItem);
         }
+
+        /* An item can have two states : One in which it has a limit & the other in which it has no limit
+        if item doesn't have any limit = In database (item_limit = 0)
+        if item has limit = In database item_limit is set to the limit count
+         */
+        if (catalogItem.getItemLimit() != 0) {
+            if (savedCartItemEntity.getQuantity() >= catalogItem.getItemLimit()) {
+                throw new AppRuntimeException("You have reached the maximum limit for this item");
+            }
+        }
         // increase the quantity
         savedCartItemEntity.setQuantity(savedCartItemEntity.getQuantity() + 1);
         savedCartItemEntity = cartItemEntityRepository.save(savedCartItemEntity);
