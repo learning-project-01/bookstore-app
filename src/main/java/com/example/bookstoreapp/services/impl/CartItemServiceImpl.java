@@ -2,10 +2,7 @@ package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.CartItemEntity;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
-import com.example.bookstoreapp.models.Cart;
-import com.example.bookstoreapp.models.CartItem;
-import com.example.bookstoreapp.models.CartItemState;
-import com.example.bookstoreapp.models.CatalogItem;
+import com.example.bookstoreapp.models.*;
 import com.example.bookstoreapp.repositories.CartItemEntityRepository;
 import com.example.bookstoreapp.services.CartItemService;
 import com.example.bookstoreapp.services.CatalogItemService;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -163,5 +161,24 @@ public class CartItemServiceImpl implements CartItemService {
         log.info("clear items from cart: {} with state: {}", cartId, state);
 
         return deletedRowCount;
+    }
+    @Override
+    public CartItemStateUpdate updateState(Long catalogItemId, CartItem cartItem) {
+        CartItemState state = CartItemState.BUY_NOW;
+        Long cartId= userContextService.getUserId();
+        CartItemEntity item=findCartItemEntity(catalogItemId);
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
+
+        Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
+        List<Predicate> predicateList = new ArrayList<>();
+
+        Predicate condition1 = criteriaBuilder.equal(root.get("cartId"), cartId);
+        Predicate condition2 = criteriaBuilder.equal(root.get("state"), state);
+        criteriaQuery.where(criteriaBuilder.and(condition1, condition2));
+
+        criteriaQuery.where(predicateList.toArray(new Predicate[0]));
+        return (CartItemStateUpdate) entityManager.createQuery(criteriaQuery).getResultList();
     }
 }
