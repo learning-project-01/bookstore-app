@@ -162,23 +162,12 @@ public class CartItemServiceImpl implements CartItemService {
 
         return deletedRowCount;
     }
+
     @Override
-    public CartItemStateUpdate updateState(Long catalogItemId, CartItem cartItem) {
-        CartItemState state = CartItemState.BUY_NOW;
-        Long cartId= userContextService.getUserId();
-        CartItemEntity item=findCartItemEntity(catalogItemId);
-
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<CartItemEntity> criteriaQuery = criteriaBuilder.createQuery(CartItemEntity.class);
-
-        Root<CartItemEntity> root = criteriaQuery.from(CartItemEntity.class);
-        List<Predicate> predicateList = new ArrayList<>();
-
-        Predicate condition1 = criteriaBuilder.equal(root.get("cartId"), cartId);
-        Predicate condition2 = criteriaBuilder.equal(root.get("state"), state);
-        criteriaQuery.where(criteriaBuilder.and(condition1, condition2));
-
-        criteriaQuery.where(predicateList.toArray(new Predicate[0]));
-        return (CartItemStateUpdate) entityManager.createQuery(criteriaQuery).getResultList();
+    public CartItemStateUpdate updateState(Long catalogItemId, CartItemStateUpdate updateState) {
+        CartItemEntity cartItemEntity = findCartItemEntity(catalogItemId);
+        cartItemEntity.setState(updateState.getState().getWeight());
+        cartItemEntityRepository.save(cartItemEntity);
+        return updateState;
     }
 }
