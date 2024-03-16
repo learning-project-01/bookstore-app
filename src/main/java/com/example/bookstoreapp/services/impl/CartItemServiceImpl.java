@@ -2,7 +2,11 @@ package com.example.bookstoreapp.services.impl;
 
 import com.example.bookstoreapp.entities.CartItemEntity;
 import com.example.bookstoreapp.exceptions.AppRuntimeException;
-import com.example.bookstoreapp.models.*;
+import com.example.bookstoreapp.models.Cart;
+import com.example.bookstoreapp.models.CartItem;
+import com.example.bookstoreapp.models.CartItemState;
+import com.example.bookstoreapp.models.CartItemStateUpdate;
+import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CartItemEntityRepository;
 import com.example.bookstoreapp.services.CartItemService;
 import com.example.bookstoreapp.services.CatalogItemService;
@@ -20,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
