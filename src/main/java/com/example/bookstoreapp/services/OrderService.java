@@ -7,6 +7,4 @@ public interface OrderService {
 
   public ShoppingOrder createOrder(OrderRequest orderRequest);
 
-  public ShoppingOrder generateOrderInvoice(Long id);
-
 }
