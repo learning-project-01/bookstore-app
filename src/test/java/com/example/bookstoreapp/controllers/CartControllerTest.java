@@ -2,6 +2,8 @@ package com.example.bookstoreapp.controllers;
 
 import com.example.bookstoreapp.models.Cart;
 import com.example.bookstoreapp.models.CartItem;
+import com.example.bookstoreapp.models.CartItemState;
+import com.example.bookstoreapp.models.CartItemStateUpdate;
 import com.example.bookstoreapp.services.CartItemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,5 +54,14 @@ class CartControllerTest {
         Mockito.when(cartItemService.doCheckout(anyLong())).thenReturn(cart);
         Cart cartCheckout = cartController.checkout();
         assertEquals(cart, cartCheckout);
+    }
+
+    @Test
+    void updateState() {
+        Long id = System.nanoTime();
+        CartItemStateUpdate stateUpdate = new CartItemStateUpdate();
+        stateUpdate.setCatalogItemId(id);
+        stateUpdate.setState(CartItemState.SAVE_LATER);
+        cartController.updateState(id, stateUpdate);
     }
 }

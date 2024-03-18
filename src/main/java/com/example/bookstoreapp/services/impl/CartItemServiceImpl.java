@@ -5,6 +5,7 @@ import com.example.bookstoreapp.exceptions.AppRuntimeException;
 import com.example.bookstoreapp.models.Cart;
 import com.example.bookstoreapp.models.CartItem;
 import com.example.bookstoreapp.models.CartItemState;
+import com.example.bookstoreapp.models.CartItemStateUpdate;
 import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CartItemEntityRepository;
 import com.example.bookstoreapp.services.CartItemService;
@@ -173,5 +174,13 @@ public class CartItemServiceImpl implements CartItemService {
         log.info("clear items from cart: {} with state: {}", cartId, state);
 
         return deletedRowCount;
+    }
+
+    @Override
+    public CartItemStateUpdate updateState(Long catalogItemId, CartItemStateUpdate updateState) {
+        CartItemEntity cartItemEntity = findCartItemEntity(catalogItemId);
+        cartItemEntity.setState(updateState.getState().getWeight());
+        cartItemEntityRepository.save(cartItemEntity);
+        return updateState;
     }
 }
