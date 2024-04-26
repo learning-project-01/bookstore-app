@@ -19,9 +19,16 @@ import java.io.IOException;
 @Slf4j
 public class AuthenticationFilter implements Filter {
 
-  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**", "/user/login", "/user/signup", "/health","/swagger-ui/**", "/catalogItems/**"};
+  private static final String[] PUBLIC_URI_PATTERNS = {"/api/**",
+      "/user/login",
+      "/user/signup",
+      "/health",
+      "/swagger-ui/**",
+      "/catalogItems/**"
+  };
 
   public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
+  public static final String X_AUTH_TOKEN_LOWER = X_AUTH_TOKEN.toLowerCase();
 
   private AuthService authService;
 
@@ -29,12 +36,16 @@ public class AuthenticationFilter implements Filter {
     this.authService = authService;
   }
 
+  private boolean isPreflightRequest(HttpServletRequest request){
+    log.warn("preflight request: {}", request.getRequestURI());
+    return request.getMethod().equals("OPTIONS");
+  }
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     log.info("filter executed for url: {}", request.getRequestURL());
     log.info("filter executed for uri: {}", request.getRequestURI());
-    if (isPublicUri(request.getRequestURI())) {
+    if (isPreflightRequest(request) || isPublicUri(request.getRequestURI())) {
       filterChain.doFilter(servletRequest, servletResponse);
       return;
     }
