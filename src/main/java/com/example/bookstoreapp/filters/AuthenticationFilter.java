@@ -28,7 +28,6 @@ public class AuthenticationFilter implements Filter {
   };
 
   public static final String X_AUTH_TOKEN = "X-AUTH-TOKEN";
-  public static final String X_AUTH_TOKEN_LOWER = X_AUTH_TOKEN.toLowerCase();
 
   private AuthService authService;
 
@@ -43,13 +42,23 @@ public class AuthenticationFilter implements Filter {
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
     HttpServletRequest request = (HttpServletRequest) servletRequest;
+    HttpServletResponse response = (HttpServletResponse) servletResponse;
+    /*
+     The status code was missing on 401 error and
+     the pre-flight request was also failing when the status code sent by server is not 2XX.
+     As the status code is missing the frontend is not able to extract the status code on error
+     */
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    response.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    response.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, X-AUTH-TOKEN");
+
     log.info("filter executed for url: {}", request.getRequestURL());
     log.info("filter executed for uri: {}", request.getRequestURI());
     if (isPreflightRequest(request) || isPublicUri(request.getRequestURI())) {
       filterChain.doFilter(servletRequest, servletResponse);
       return;
     }
-    HttpServletResponse response = (HttpServletResponse) servletResponse;
     boolean userContext = setUserContext(request, response);
     if(userContext) {
       filterChain.doFilter(servletRequest, servletResponse);
