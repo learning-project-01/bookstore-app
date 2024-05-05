@@ -18,6 +18,7 @@ public class ShoppingOrderEntity {
   @Id
   private Long id;
   private Float totalAmount;
+  private Long cartId;
   private int totalItemCount;
   private Date orderDate;
   private String address;

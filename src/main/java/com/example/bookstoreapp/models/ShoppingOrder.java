@@ -11,6 +11,7 @@ import java.util.List;
 public class ShoppingOrder {
 
   private Long id;
+  private Long cartId;
   private Float totalAmount;
   private int totalItemCount;
   private Date orderDate;
@@ -24,6 +25,7 @@ public class ShoppingOrder {
     entity.setTotalItemCount(this.getTotalItemCount());
     entity.setOrderDate(this.getOrderDate());
     entity.setAddress(this.getAddress());
+    entity.setCartId(this.getCartId());
     return entity;
   }
 
@@ -32,7 +34,8 @@ public class ShoppingOrder {
     this.setTotalAmount(entity.getTotalAmount());
     this.setTotalItemCount(entity.getTotalItemCount());
     this.setOrderDate(entity.getOrderDate());
-    this.setOrderDate(entity.getOrderDate());
+    this.setCartId(entity.getCartId());
+    this.setAddress(entity.getAddress());
     return this;
   }
 }

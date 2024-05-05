@@ -20,9 +20,7 @@ import com.example.bookstoreapp.services.UserContextService;
 import com.example.bookstoreapp.utils.AppUtils;
 import com.example.bookstoreapp.utils.IdGenerator;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -63,6 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     ShoppingOrder shoppingOrder = new ShoppingOrder();
     shoppingOrder.setId(IdGenerator.getLongId());
+    shoppingOrder.setCartId(userContextService.getUserId());
     shoppingOrder.setOrderDate(new Date());
 
     // 1. do checkout
@@ -124,6 +124,23 @@ public class OrderServiceImpl implements OrderService {
 
     return shoppingOrder;
 
+  }
+
+  @Override
+  public List<ShoppingOrder> list() {
+    long cartId = userContextService.getUserId();
+    List<ShoppingOrderEntity> entities = shoppingOrderEntityRepository.findByCartId(cartId);
+    return entities.stream().map(e-> new ShoppingOrder().fromEntity(e)).collect(Collectors.toList());
+  }
+
+  @Override
+  public ShoppingOrder extractOrder(long orderId) {
+   ShoppingOrderEntity shoppingOrderEntity = shoppingOrderEntityRepository.findById(orderId).get();
+   List<OrderItemEntity> entities = orderItemEntityRepository.findByOrderId(orderId);
+   ShoppingOrder shoppingOrder = new ShoppingOrder().fromEntity(shoppingOrderEntity);
+   List<OrderItem> orderItems = entities.stream().map(e-> new OrderItem().fromEntity(e)).collect(Collectors.toList());
+   shoppingOrder.setOrderItems(orderItems);
+   return shoppingOrder;
   }
 
   private void writeOrderAsJsonDocument(ShoppingOrder shoppingOrder){
