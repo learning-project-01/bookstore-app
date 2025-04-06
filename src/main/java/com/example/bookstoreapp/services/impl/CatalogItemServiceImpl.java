@@ -6,6 +6,9 @@ import com.example.bookstoreapp.models.CatalogItem;
 import com.example.bookstoreapp.repositories.CatalogItemEntityRepository;
 import com.example.bookstoreapp.services.CatalogItemService;
 import com.example.bookstoreapp.utils.IdGenerator;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaUpdate;
@@ -29,6 +32,9 @@ public class CatalogItemServiceImpl implements CatalogItemService {
 
   @Autowired
   private EntityManager entityManager;
+
+  @Autowired
+  private Tracer tracer;
 
   @Override
   public CatalogItem create(CatalogItem catalogItem) {
@@ -57,13 +63,32 @@ public class CatalogItemServiceImpl implements CatalogItemService {
 
   @Override
   public List<CatalogItem> list() {
-    Iterable<CatalogItemEntity> entities = catalogItemEntityRepository.findAll();
-    List<CatalogItem> items = new ArrayList<>();
-    for (CatalogItemEntity entity : entities) {
-      CatalogItem catalogItem = new CatalogItem().fromEntity(entity);
-      items.add(catalogItem);
+    Span parentSpan = tracer
+            .spanBuilder("FetchCatalogItemsFromDB")
+            .startSpan();
+
+    try (Scope parentScope = parentSpan.makeCurrent()) {
+      parentSpan.setAttribute("repository", "catalogItemEntityRepository.findAll");
+
+      Span dbSpan = tracer
+              .spanBuilder("Database: catalogItemEntityRepository.findAll")
+              .startSpan();
+
+      try (Scope dbScope = dbSpan.makeCurrent()) {
+        Iterable<CatalogItemEntity> entities = catalogItemEntityRepository.findAll();
+        List<CatalogItem> items = new ArrayList<>();
+        for (CatalogItemEntity entity : entities) {
+          CatalogItem catalogItem = new CatalogItem().fromEntity(entity);
+          items.add(catalogItem);
+        }
+        return items;
+      } finally {
+        dbSpan.end();
+      }
+
+    } finally {
+      parentSpan.end();
     }
-    return items;
   }
 
 

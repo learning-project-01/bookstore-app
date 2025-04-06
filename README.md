@@ -50,3 +50,9 @@ https://dev.to/cicirello/using-github-actions-to-build-a-java-project-with-pull-
 `application.properties` so that `SpringDocSecurityConfiguration` bean wont be created and search
 for spring security related classes.
 - The endpoint is accessible at: `http://localhost:8080/swagger-ui/index.html`
+
+##  OpenTelemetry Integration 
+- Add the below VM args to enable the opentelemetry global autoconfiguration
+```properties
+-Dotel.java.global-autoconfigure.enabled=true
+```
